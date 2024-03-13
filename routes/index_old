@@ -7,8 +7,8 @@ const passport = require("passport");
 const localStrategy = require("passport-local").Strategy;
 const multer = require("multer");
 const twilio = require("twilio");
-const accountSid = "AC3778768b665454fc9796bf452df3ba07";
-const authToken = "47ff63cd04ba0749aa88c772e22c60c4";
+const accountSid = "add your acconstion to your account";
+const authToken = "add your auth token to your account";
 const client = new twilio(accountSid, authToken);
 const PhoneNumber = require("libphonenumber-js");
 const path = require("path");
@@ -724,7 +724,7 @@ function isLoggedIn(req, res, next) {
 // Export the router
 module.exports = router;
 
-// LHPBDUGY32LMV4ZVX7B4PSUN
+
 
 
 
