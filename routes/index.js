@@ -1,25 +1,23 @@
 // Import required modules
-var express = require("express");
-var router = express.Router();
-const userModal = require("./models/users");
-const productModal = require("./models/products");
-const userAddressModal = require("./models/userAddress");
-const userOrderModal = require("./models/userOrder");
-const passport = require("passport");
-const localStrategy = require("passport-local").Strategy;
-const multer = require("multer");
-const twilio = require("twilio");
-const accountSid = "AC3778768b665454fc9796bf452df3ba07";
-const authToken = "47ff63cd04ba0749aa88c772e22c60c4";
-const client = new twilio(accountSid, authToken);
-// const PhoneNumber = require("libphonenumber-js");
-// const request = require("request");
+var express = require("express"); // Import the Express.js framework
+var router = express.Router(); // Create a router instance
+const userModal = require("./models/users"); // Import the user model
+const productModal = require("./models/products"); // Import the product model
+const userAddressModal = require("./models/userAddress"); // Import the user address model
+const userOrderModal = require("./models/userOrder"); // Import the user order model
+const passport = require("passport"); // Import Passport.js for user authentication
+const localStrategy = require("passport-local").Strategy; // Import Passport.js local strategy
+const multer = require("multer"); // Import multer for handling file uploads
+const twilio = require("twilio"); // Import Twilio API for sending SMS messages
+const accountSid = "AC3778768b665454fc9796bf452df3ba07"; // Twilio account SID
+const authToken = "47ff63cd04ba0749aa88c772e22c60c4"; // Twilio authentication token
+const client = new twilio(accountSid, authToken); // Create Twilio client instance
 
-const path = require("path");
+const path = require("path"); // Import path module
 
 // Import the generateOTP function
 const generateOTP = require("../public/javascripts/optUtil");
-const upload = require("./multer");
+const upload = require("./multer"); // Import multer upload configuration
 const { log } = require("console");
 const { send } = require("process");
 
@@ -31,15 +29,18 @@ router.get("/", function (req, res, next) {
   res.render("index");
 });
 
-/* GET cart Home  page. */
+/* show cart page if user is not logged in */
+router.get("/cart", function (req, res, next) {
+  // Render the cart page
+  res.render("cart");
+});
+
+/* GET profile-likeProduct page */
 router.get("/profile-likeProduct", isLoggedIn, async function (req, res, next) {
   try {
-    // Assuming you have the user ID from the logged-in user
+    // Fetch the logged-in user's liked products and render the profile page
     const userId = req.user._id;
-
     const user = await userModal.findOne({ _id: userId }).populate("like");
-
-    // Render the template with the user object
     res.render("profile-likeProduct", { user });
   } catch (error) {
     console.error(error);
@@ -47,6 +48,7 @@ router.get("/profile-likeProduct", isLoggedIn, async function (req, res, next) {
   }
 });
 
+// Handle liking a product
 router.get("/likeProduct/:id", isLoggedIn, async function (req, res) {
   const productId = req.params.id;
   const userId = req.user._id;
@@ -75,19 +77,16 @@ router.get("/likeProduct/:id", isLoggedIn, async function (req, res) {
   }
 });
 
-// ! delete
-
+// Route to delete liked products from user profile
 router.get("/delete-like-list", async (req, res) => {
   res.render("delete-like-list");
 });
-// ...
 
-router.get(
-  "/profile-likeProduct/:productId",
-  isLoggedIn,
-  async function (req, res, next) {
+// Handle deleting a liked product
+router.get("/profile-likeProduct/:productId", isLoggedIn, async function (req, res, next) {
+    
     try {
-      // Assuming you have the user ID from the logged-in user
+      //  you have the user ID from the logged-in user
       const userId = req.user._id;
       const productIdToDelete = req.params.productId;
 
@@ -104,6 +103,7 @@ router.get(
 
       // Redirect to the "profile-likeProduct" page
       res.redirect("/profile-likeProduct");
+
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal Server Error");
@@ -112,7 +112,6 @@ router.get(
 );
 
 // Assuming you have the required dependencies and setup for your Express app
-
 router.get("/profile", function (req, res) {
   // Check the role of the authenticated user
   if (req.isAuthenticated() && req.user.role === "admin") {
@@ -134,7 +133,7 @@ router.get("/register", function (req, res, next) {
   res.render("register");
 });
 
-// !Handle user registration
+// Handle user registration
 router.post("/register", async function (req, res, next) {
   try {
     const userData = new userModal({ ...req.body });
@@ -162,128 +161,127 @@ router.post("/register", async function (req, res, next) {
   }
 });
 
-//! Register User using mobile otp authentication :
-//  router.post("/register", async function (req, res, next) {
-//   try {
-//     const userData = new userModal({
-//       username: req.body.username,
-//       mobile: req.body.mobile,
-//       password: req.body.password, // Fix: Assign the password field correctly
-//     });
+/* //! Register User using mobile otp authentication :
+router.post("/register", async function (req, res, next) {
+  try {
+    const userData = new userModal({
+      username: req.body.username,
+      mobile: req.body.mobile,
+      password: req.body.password, // Fix: Assign the password field correctly
+    });
 
-//     // Check if the mobile number already exists
-//     const existingUserMobile = await userModal.findOne({
-//       mobile: req.body.mobile,
-//     });
+    // Check if the mobile number already exists
+    const existingUserMobile = await userModal.findOne({
+      mobile: req.body.mobile,
+    });
 
-//     if (existingUserMobile) {
-//       return res.render("register", {
-//         errorMessages: ["A user with the given mobile number already exists."],
-//       });
-//     }
+    if (existingUserMobile) {
+      return res.render("register", {
+        errorMessages: ["A user with the given mobile number already exists."],
+      });
+    }
 
-//     // Generate OTP and store it in the session
-//     const otp = generateOTP();
-//     req.session.otp = otp;
-//     console.log(req.session.otp);
-//     req.session.userData = {
-//       // Store other data in the session as needed
-//       username: req.body.username,
-//       mobile: req.body.mobile,
-//       password: req.body.password,
-//     };
-//     console.log(req.session.userData);
+    // Generate OTP and store it in the session
+    const otp = generateOTP();
+    req.session.otp = otp;
+    console.log(req.session.otp);
+    req.session.userData = {
+      // Store other data in the session as needed
+      username: req.body.username,
+      mobile: req.body.mobile,
+      password: req.body.password,
+    };
+    console.log(req.session.userData);
 
-//     // Send OTP via Twilio
-//     const phoneNumber = PhoneNumber(req.body.mobile, "IN");
-//     const formattedNumber = phoneNumber.formatInternational();
+    // Send OTP via Twilio
+    const phoneNumber = PhoneNumber(req.body.mobile, "IN");
+    const formattedNumber = phoneNumber.formatInternational();
 
-//     await client.messages.create({
-//       to: formattedNumber,
-//       from: +16502296943,
-//       body: `Your OTP for registration is: ${otp}`,
-//     });
+    await client.messages.create({
+      to: formattedNumber,
+      from: +16502296943,
+      body: `Your OTP for registration is: ${otp}`,
+    });
 
-//     // Redirect to OTP verification page with mobile number
-//     res.redirect(`/verify?mobile=${req.body.mobile}`);
-//   } catch (error) {
-//     console.error("Registration error:", error);
-//     res.render("register", {
-//       errorMessages: [
-//         error.message ||
-//           "An unexpected error occurred during registration.",
-//       ],
-//     });
-//   }
-// });
+    // Redirect to OTP verification page with mobile number
+    res.redirect(`/verify?mobile=${req.body.mobile}`);
+  } catch (error) {
+    console.error("Registration error:", error);
+    res.render("register", {
+      errorMessages: [
+        error.message || "An unexpected error occurred during registration.",
+      ],
+    });
+  }
+});*/
 
-// // !Verify OTP
-// router.get("/verify",  function (req, res, next) {
-//   res.render("verify");
-// });
+/*//! Render OTP verification page
+router.get("/verify", function (req, res, next) {
+  res.render("verify");
+});
 
-// router.post("/verify", async function (req, res, next) {
-//   try {
-//     // Check if OTP from session matches the user-input OTP
-//     if (req.session.otp !== req.body.otp) {
-//       return res.render("verify", {
-//         errorMessages: ["Invalid OTP. Please try again."],
-//       });
-//     }
+// Handle OTP verification for user registration
+router.post("/verify", async function (req, res, next) {
+  try {
+    // Check if OTP from session matches the user-input OTP
+    if (req.session.otp !== req.body.otp) {
+      return res.render("verify", {
+        errorMessages: ["Invalid OTP. Please try again."],
+      });
+    }
+    // Access stored user data from the session
+    const storedUserData = req.session.userData;
 
-//     // Access stored user data from the session
-//     const storedUserData = req.session.userData;
+    if (!storedUserData || !storedUserData.password) {
+      // Handle the case where userData or password is not available
+      return res.render("verify", {
+        errorMessages: ["User data is missing or incomplete."],
+      });
+    }
 
-//     if (!storedUserData || !storedUserData.password) {
-//       // Handle the case where userData or password is not available
-//       return res.render("verify", {
-//         errorMessages: ["User data is missing or incomplete."],
-//       });
-//     }
+    // Find or create the user by mobile number
+    let user = await userModal.findOne({ mobile: storedUserData.mobile });
 
-//     // Find or create the user by mobile number
-//     let user = await userModal.findOne({ mobile: storedUserData.mobile });
+    if (!user) {
+      // If user not found, create a new user
+      user = new userModal({
+        mobile: storedUserData.mobile,
+        username: storedUserData.username,
+        password: storedUserData.password,
+        // Include other fields as needed
+      });
+    }
 
-//     if (!user) {
-//       // If user not found, create a new user
-//       user = new userModal({
-//         mobile: storedUserData.mobile,
-//         username: storedUserData.username,
-//         password: storedUserData.password,
-//         // Include other fields as needed
-//       });
-//     }
+    // Clear the OTP after successful verification
+    user.verificationCode = undefined;
 
-//     // Clear the OTP after successful verification
-//     user.verificationCode = undefined;
+    await userModal.register(user, storedUserData.password);
 
-//     await userModal.register(user, storedUserData.password);
+    // passport.authenticate("local")(req, res, function () {
+    req.login(user, function (err) {
+      if (err) {
+        console.error("Passport login error:", err);
+        return res.render("verify", {
+          errorMessages: ["An unexpected error occurred during login."],
+        });
+      }
+      // Clear the session data after successful login
+      req.session.otp = undefined;
+      req.session.userData = undefined;
+      // });
+      res.redirect("/login");
+    });
+  } catch (error) {
+    console.error("Verification error:", error);
+    res.render("verify", {
+      errorMessages: [
+        error.message || "An unexpected error occurred during verification.",
+      ],
+    });
+  }
+});*/
 
-//     // passport.authenticate("local")(req, res, function () {
-//       req.login(user, function (err) {
-//         if (err) {
-//           console.error("Passport login error:", err);
-//           return res.render("verify", {
-//             errorMessages: ["An unexpected error occurred during login."],
-//           });
-//         }
-//         // Clear the session data after successful login
-//         req.session.otp = undefined;
-//         req.session.userData = undefined;
-//       // });
-//       res.redirect("/login");
-//     });
-//   } catch (error) {
-//     console.error("Verification error:", error);
-//     res.render("verify", {
-//       errorMessages: [
-//         error.message ||
-//           "An unexpected error occurred during verification.",
-//       ],
-//     });
-//   }
-// });
-//! Delete user data
+// Delete user data
 router.get("/admin-datas/delete-userData/:id", isLoggedIn, async (req, res) => {
   const userId = req.params.id;
   try {
@@ -295,77 +293,35 @@ router.get("/admin-datas/delete-userData/:id", isLoggedIn, async (req, res) => {
   }
 });
 
-// ! new
+// Render user address page for adding new address
 router.get("/userAddress/:productId", isLoggedIn, async function (req, res, next) {
-  try {
-    const productId = req.params.productId;
-    console.log(productId);
+    try {
+      const productId = req.params.productId;
+      console.log(productId);
 
-    // Assuming you have the user ID from the logged-in user
-    const userId = req.user._id;
+      // Assuming you have the user ID from the logged-in user
+      const userId = req.user._id;
 
-    // Correct the query to use findOne
-    const userAddress = await userModal
-      .findOne({ _id: userId })
-      .populate('userAddressId');
+      // Correct the query to use findOne
+      const userAddress = await userModal
+        .findOne({ _id: userId })
+        .populate("userAddressId");
 
       console.log(userAddress);
 
-    // Store data in the session
-    req.session.userId = userId;
-    req.session.productId = productId;
-    // req.session.userAddressId = userAddress.userAddressId; // Assuming userAddressId is a property in the userAddress object
-   
-    // Render the template with the user object
-    // res.send(userAddress);
-    res.render("userAddress", { userAddress });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+      // Store data in the session
+      req.session.userId = userId;
+      req.session.productId = productId;
+      res.render("userAddress", { userAddress });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
   }
-});
+);
 
-
-
-// ! check
-
-
-// router.get("/checkSessionData/:userAddressId", async function (req, res) {
-//   const userId = req.session.userId;
-//   const productId = req.session.productId;
-//   const userAddressId = req.params.userAddressId;
-//   console.log(userAddressId, productId, userId);
-
-//   // try {
-//   //   const userOrder = await userOrderModal.findOne({
-//   //     user: userId,
-//   //     product: productId,
-//   //     userAddress: userAddressId,
-//   //   });
-
-//     // Create a new productModal instance with the extracted data
-//     const userOrder  = new userOrderModal({
-//       user: userId,
-//       product: productId,
-//      userAddress: userAddressId,
-     
-//     });
-
-//     // Save the product data to the database
-//     const savedProduct = await userOrderModal.save();
-
-//     if (userOrder) {
-//       res.send("Data is stored in the session.");
-//     } else {
-//       res.send("Data is not stored in the session.");
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
-
-router.get("/checkSessionData/:userAddressId", async function (req, res) {
+// Check session data and store user order
+router.get("/checkSessionData/:userAddressId", isLoggedIn, async function (req, res) {
   const userId = req.session.userId;
   const productId = req.session.productId;
   const userAddressId = req.params.userAddressId;
@@ -380,7 +336,7 @@ router.get("/checkSessionData/:userAddressId", async function (req, res) {
     });
 
     // Save the userOrder data to the database
-    await userOrder.save();  // Use await here to ensure it's asynchronous
+    await userOrder.save(); // Use await here to ensure it's asynchronous
 
     res.send("Data is stored in the session.");
   } catch (error) {
@@ -389,19 +345,20 @@ router.get("/checkSessionData/:userAddressId", async function (req, res) {
   }
 });
 
-// ! show the order
-router.get("/userOrder/:orderId", async (req, res) => {
+// Show user order details
+router.get("/userOrder/:orderId", isLoggedIn, async (req, res) => {
   try {
     // Assuming you have a parameter named orderId in the URL
     const orderId = req.params.orderId;
 
     // Fetch the UserOrder document from the database
-    const userOrder = await userOrderModal.findOne({ _id: orderId })
+    const userOrder = await userOrderModal
+      .findOne({ _id: orderId })
       .populate("user") // Assuming you want to populate the 'user' field
       .populate("product") // Assuming you want to populate the 'product' field
       .populate("userAddress"); // Assuming you want to populate the 'userAddress' field
 
-      console.log(userOrder);
+    console.log(userOrder);
     if (!userOrder) {
       return res.status(404).send("UserOrder not found");
     }
@@ -414,17 +371,18 @@ router.get("/userOrder/:orderId", async (req, res) => {
   }
 });
 
+// Render success page after storing address
+router.get("/address-storeosuccessfullly", function (req, res) {
+  res.render("address-storeosuccessfullly");
+});
 
-//,,
-// ! add data
+// Handle adding user address
 router.post("/userAddress", isLoggedIn, async function (req, res) {
-  // const userId = req.user._id;
-
   try {
     const userId = await userModal.findOne({
       username: req.session.passport.user,
     });
-    // console.log('userId:', userId);
+
     // Create a new user address instance using the UserAddress model
     const newUserAddress = new userAddressModal({
       userId: userId._id,
@@ -446,25 +404,17 @@ router.post("/userAddress", isLoggedIn, async function (req, res) {
 
     // Save the updated user with the new user address reference
     await userId.save();
-
-    // res.status(200).send('User address submitted successfully!');
-
-    res.render("userAddress");
+    res.status(200).render("address-storeosuccessfullly");
   } catch (error) {
     console.error("Error submitting user address:", error);
     res.status(500).send("Internal Server Error");
   }
 });
+//! Handle adding user address
+router.get("/userorder", (req, res) => {});
 
-// !  user order
-router.get('/userorder', (req, res) => {});
-
-// ! Delete data
-// Assuming you have something like this in your server-side code
-router.delete(
-  "/deleteAddress/:addressId",
-  isLoggedIn,
-  async function (req, res, next) {
+// Delete user address
+router.delete("/deleteAddress/:addressId", isLoggedIn, async function (req, res, next) {
     try {
       const userId = req.user._id;
       const addressIdToDelete = req.params.addressId;
@@ -484,7 +434,7 @@ router.delete(
   }
 );
 
-//! Cart data routes
+// Render cart data pages
 router.get("/cart-data/balt-data", function (req, res, next) {
   res.render("cart-data/balt-data");
 });
@@ -501,34 +451,14 @@ router.get("/cart-data/mal-wallTes", function (req, res, next) {
   res.render("cart-data/mal-walltes");
 });
 
-// Login routes
+// Render Login page
 router.get("/login", function (req, res, next) {
   res.render("login", { error: req.flash("error") });
 });
 
-//! OLD-login
-// router.post(
-//   "/login",
-//   passport.authenticate("local", {
-//     // successRedirect: "/profile",
-//     failureRedirect: "/login",
-//     failureFlash: true,
-//   }),
-//   function (req, res) {
-//     // Check the role of the authenticated user
-//     if (req.user && req.user.role === "admin") {
-//       res.render("admin");
-//     } else {
-//       res.render("profile");
-//     }
-//   }
-// );
-
-// !/login
-
-router.post(
-  "/login",
-  passport.authenticate("local", {
+// Render login page
+router.post("/login",
+   passport.authenticate("local", {
     successRedirect: "/profile",
     failureRedirect: "/login",
     failureFlash: true,
@@ -547,7 +477,7 @@ router.post(
 );
 
 // Product Cards route
-router.get("/productcard", async (req, res) => {
+router.get("/productcard", isLoggedIn, async (req, res) => {
   try {
     const products = await productModal.find();
     res.render("productcard", { products });
@@ -557,15 +487,13 @@ router.get("/productcard", async (req, res) => {
   }
 });
 
-//! Admin routes
-router.get("/admin", isLoggedIn, function (req, res, next) {
+// Render admin page
+router.get("/admin", isLoggedInAdmin, function (req, res, next) {
   res.render("admin");
 });
 
-router.get(
-  "/admin-datas/user-data",
-  isLoggedIn,
-  async function (req, res, next) {
+// Render user data for admin
+router.get("/admin-datas/user-data", isLoggedIn, async function (req, res, next) {
     try {
       const user_data = await userModal.find();
       res.render("admin-datas/user-data", { user_data });
@@ -576,10 +504,8 @@ router.get(
   }
 );
 
-router.get(
-  "/admin-datas/product-data",
-  isLoggedIn,
-  async function (req, res, next) {
+// Render product data for admin
+router.get("/admin-datas/product-data", isLoggedInAdmin , async function (req, res, next) {
     try {
       const product_data = await productModal.find();
       res.render("admin-datas/product-data", { product_data });
@@ -590,7 +516,7 @@ router.get(
   }
 );
 
-router.get("/admin-datas/delete-product/:id", isLoggedIn, async (req, res) => {
+router.get("/admin-datas/delete-product/:id", isLoggedInAdmin, async (req, res) => {
   const productId = req.params.id;
   try {
     await productModal.findByIdAndDelete(productId);
@@ -601,7 +527,8 @@ router.get("/admin-datas/delete-product/:id", isLoggedIn, async (req, res) => {
   }
 });
 
-router.get("/admin-datas/edit-product/:id", isLoggedIn, async (req, res) => {
+// Handle editing a product
+router.get("/admin-datas/edit-product/:id", isLoggedInAdmin, async (req, res) => {
   const productId = req.params.id;
   try {
     const product = await productModal.findById(productId);
@@ -612,10 +539,10 @@ router.get("/admin-datas/edit-product/:id", isLoggedIn, async (req, res) => {
   }
 });
 
-//... (Previous code remains unchanged)
+
 
 //! Update product route
-router.post("/admin-datas/edit-product/:id", isLoggedIn, async (req, res) => {
+router.post("/admin-datas/edit-product/:id", isLoggedInAdmin, async (req, res) => {
   const productId = req.params.id;
   const updatedData = req.body;
   // Convert 'on' string to true, and undefined to false for the 'availability' field
@@ -657,18 +584,15 @@ router.post("/admin-datas/edit-product/:id", isLoggedIn, async (req, res) => {
   }
 });
 
-//..
+
 //! Add product route
-router.get("/admin-datas/addproduct", isLoggedIn, function (req, res, next) {
+router.get("/admin-datas/addproduct", isLoggedInAdmin, function (req, res, next) {
   res.render("admin-datas/addproduct");
 });
 
-router.post(
-  "/admin-datas/addproduct",
-  isLoggedIn,
-  upload.array("images", 4),
-  async function (req, res) {
-    try {
+router.post("/admin-datas/addproduct",isLoggedInAdmin, upload.array("images", 4), async function (req, res) {
+   
+  try {
       const images = req.files.map((file) => path.basename(file.path));
       const variants = getVariantsFromRequest(req.body);
 
@@ -709,14 +633,12 @@ router.post(
 
 //! show data in profilr page
 
-router.get("/user-balt-pro", (req, res) => {
+router.get("/user-balt-pro",isLoggedIn, (req, res) => {
   // Render the hbs template and pass the cardData to it
   res.render("productModal", { cardData });
 });
-// ! 0
-router.get(
-  "/profile-card/user-balt-pro",
-  isLoggedIn,
+
+router.get("/profile-card/user-balt-pro",isLoggedIn,
   async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
@@ -730,11 +652,8 @@ router.get(
     }
   }
 );
-// ! 1
-router.get(
-  "/profile-card/user-mal-walltes-pro",
-  isLoggedIn,
-  async function (req, res, next) {
+
+router.get("/profile-card/user-mal-walltes-pro", isLoggedIn, async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
       const product_data = await productModal.find({ category: "wallet" });
@@ -748,11 +667,7 @@ router.get(
   }
 );
 
-// ! 2
-router.get(
-  "/profile-card/user-optical-pro",
-  isLoggedIn,
-  async function (req, res, next) {
+router.get("/profile-card/user-optical-pro", isLoggedIn, async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
       const product_data = await productModal.find({ category: "optical" });
@@ -766,11 +681,7 @@ router.get(
   }
 );
 
-// !3
-router.get(
-  "/profile-card/user-optical-pro",
-  isLoggedIn,
-  async function (req, res, next) {
+router.get("/profile-card/user-optical-pro", isLoggedIn, async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
       const product_data = await productModal.find({ category: "optical" });
@@ -784,11 +695,7 @@ router.get(
   }
 );
 
-// !4
-router.get(
-  "/profile-card/user-sunglassis-pro",
-  isLoggedIn,
-  async function (req, res, next) {
+router.get("/profile-card/user-sunglassis-pro", isLoggedIn, async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
       const product_data = await productModal.find({ category: "sunglassis" });
@@ -801,11 +708,8 @@ router.get(
     }
   }
 );
-// !5
-router.get(
-  "/profile-card/user-watches-pro",
-  isLoggedIn,
-  async function (req, res, next) {
+
+router.get("/profile-card/user-watches-pro", isLoggedIn, async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
       const product_data = await productModal.find({ category: "watches" });
@@ -819,12 +723,12 @@ router.get(
   }
 );
 
-// !Order details route
-router.get("/admin-datas/order-details", isLoggedIn, function (req, res, next) {
+//! Order details route
+router.get("/admin-datas/order-details", isLoggedInAdmin, function (req, res, next) {
   res.render("admin-datas/order-details");
 });
 
-// Logout route
+//! Logout route
 router.get("/logout", function (req, res) {
   req.logout(function (err) {
     if (err) {
@@ -838,6 +742,21 @@ router.get("/logout", function (req, res) {
 function isLoggedIn(req, res, next) {
   if (req.isAuthenticated()) return next();
   res.redirect("/");
+}
+
+// for admin auth
+function isLoggedInAdmin(req, res, next) {
+  // Check if the user is authenticated
+  if (req.isAuthenticated()) {
+    // Check if the user has the role of "admin"
+    if (req.user && req.user.role === "admin") {
+      return next(); // Proceed to the next middleware or route handler
+    } else {
+      res.status(404).send("404 Page Not Found"); // Redirect to a 404 page for non-admin users
+    }
+  } else {
+    res.redirect("/"); // Redirect to the home page if the user is not authenticated
+  }
 }
 
 // Helper function to extract variants from the request body
