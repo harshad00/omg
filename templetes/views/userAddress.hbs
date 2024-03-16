@@ -82,7 +82,7 @@
               <p>Mobile: {{userAddress.mobile}}</p>
               {{/if}}
             </label>
-            <a href="/deleteAddress/{{address.address._id}}" class="delete-button">Delete</a>
+            <a href="/deleteAddress/{{address._id}}" class="delete-button">Delete</a>
           </div>
           {{/each}}
         </div>
@@ -108,7 +108,7 @@
         <input type="text" id="zipCode" name="zipCode" required>
         <label for="new_mobNO">Add Another contact:<samp class="note"> *Optional</samp></label>
         <input type="number" id="new_mobNO" name="new_mobNO">
-        <a href="address-storeosuccessfullly"> <button class="btn"  type="submit">Submit</button></a>
+        <a href="address-storeosuccessfully"> <button class="btn"  type="submit">Submit</button></a>
       </form>
     </div>
     </div>
@@ -129,7 +129,7 @@
       event.preventDefault();
       const selectedAddressId = document.querySelector('input[name="selectedAddress"]:checked').value;
       const paymentButton = document.querySelector('.payment-button');
-      paymentButton.href = "/checkSessionData/" + selectedAddressId;
+      paymentButton.href = "/payment/" + selectedAddressId;
       window.location.href = paymentButton.href;
     });
 

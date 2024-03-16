@@ -27,6 +27,9 @@ const userOrderSchema = new mongoose.Schema({
     ref: "UserAddress", // Reference to the Product model
     required: true,
   },
+  payment_id:{ 
+    type:String,
+   },
   createdAt: {
     type: Date,
     default: Date.now,

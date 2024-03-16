@@ -69,10 +69,11 @@
 
 <body>
     <h1>User Liked Products</h1>
-
+    
+       
     {{#if user}}   
     <div>{{user._id}} </div>
-    {{ console.log(user._id)}}
+    {{!-- {{ console.log(user._id)}} --}}
     {{#if user.like.length}}
     <div class="img">
         {{#each user.like}}
@@ -101,7 +102,7 @@
     {{else}}
     <p>User data not available.</p>
     {{/if}}
-
+    
     <!-- Include your additional HTML content or scripts here -->
 </body>
 

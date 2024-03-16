@@ -25,39 +25,35 @@
         <div id="page-data">
             <h2>Order Details Page</h2>
             <table>
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>Product Name</th>
-                        <th>Quantity</th>
-                        <th>Total Price</th>
-                        <th>Username</th>
-                        <th>Phone No</th>
-                        <th>Address</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>12345</td>
-                        <td>Product A</td>
-                        <td>3</td>
-                        <td>$1499.97</td>
-                        <td>John Doe</td>
-                        <td>555-1234</td>
-                        <td>123 Main St, Cityville</td>
-                    </tr>
-                    <tr>
-                        <td>12346</td>
-                        <td>Product B</td>
-                        <td>2</td>
-                        <td>$59.98</td>
-                        <td>Jane Smith</td>
-                        <td>555-5678</td>
-                        <td>456 Oak St, Townsville</td>
-                    </tr>
-                    <!-- Add more rows as needed -->
-                </tbody>
+                <tr>
+                    <th>Username</th>
+                    <th>Order ID</th>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Phone No</th>
+                    <th>Address</th>
+                    <th>Payment Id</th>
+                    <th>Date of Order</th>
+                    <th>Action</th>
+                </tr>
+                {{#each userOrderdata}}
+                <tr>
+                    <td>{{this.user.username}}</td> <!-- Username -->
+                    <td>{{this.order_id}}</td> <!-- Order ID -->
+                    <td>{{this.product._id}}</td> <!-- Product ID -->
+                    <td>{{this.product.productname}}</td> <!-- Product Name -->
+                    <td>{{this.product.price}}</td> <!-- Price -->
+                    <td>{{this.user.mobile}}</td> <!-- Phone No -->
+                    <td>{{this.userAddress.address.street}}, {{this.userAddress.address.city}},
+                        {{this.userAddress.address.state}}, {{this.userAddress.address.zipCode}}</td> <!-- Address -->
+                    {{!-- <td>{{formatDate this.createdAt}}</td> <!-- Date of Order --> --}}
+                    <td><a href="#" class="cancel-btn">{{this.payment_id}}</a></td> <!-- Cancel Button -->
+                    <td><a href="#" class="cancel-btn">Cancel</a></td> <!-- Cancel Button -->
+                </tr>
+                {{/each}}
             </table>
+
         </div>
     </main>
 

@@ -26,6 +26,7 @@
     "passport-local-mongoose": "^8.0.0",
     "request": "^2.88.2",
     "sendotp": "^1.2.9",
+    "stripe": "^14.21.0",
     "twilio": "^4.23.0",
     "uuid": "^9.0.1"
   },

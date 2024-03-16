@@ -12,6 +12,9 @@ const twilio = require("twilio"); // Import Twilio API for sending SMS messages
 const accountSid = "AC3778768b665454fc9796bf452df3ba07"; // Twilio account SID
 const authToken = "47ff63cd04ba0749aa88c772e22c60c4"; // Twilio authentication token
 const client = new twilio(accountSid, authToken); // Create Twilio client instance
+const stripe = require("stripe")(
+  "sk_test_51OuYzOSBd0rVtqIWXWsvesjYENxJoI8AgbYCFrPozbBLBcCE4QdnOqxpQOebbXRosdaeZuVYHYH0Qw2J79HgYnbH00tNRN2bcG"
+);
 
 const path = require("path"); // Import path module
 
@@ -64,7 +67,7 @@ router.get("/likeProduct/:id", isLoggedIn, async function (req, res) {
         await likeProduct.save();
         // Send a single argument or use an object to wrap both the status message and the product information
         // res.status(200).send({ message: "Product Liked", product });
-        res.status(200).render("http://localhost:3000/profile-likeProduct");
+        res.status(200).render("likeProduct");
       } else {
         res.status(400).send("Product Already Liked");
       }
@@ -83,8 +86,10 @@ router.get("/delete-like-list", async (req, res) => {
 });
 
 // Handle deleting a liked product
-router.get("/profile-likeProduct/:productId", isLoggedIn, async function (req, res, next) {
-    
+router.get(
+  "/profile-likeProduct/:productId",
+  isLoggedIn,
+  async function (req, res, next) {
     try {
       //  you have the user ID from the logged-in user
       const userId = req.user._id;
@@ -103,7 +108,6 @@ router.get("/profile-likeProduct/:productId", isLoggedIn, async function (req, r
 
       // Redirect to the "profile-likeProduct" page
       res.redirect("/profile-likeProduct");
-
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal Server Error");
@@ -135,6 +139,7 @@ router.get("/register", function (req, res, next) {
 
 // Handle user registration
 router.post("/register", async function (req, res, next) {
+  // Registration logic
   try {
     const userData = new userModal({ ...req.body });
     const existingUserMobile = await userModal.findOne({
@@ -294,7 +299,10 @@ router.get("/admin-datas/delete-userData/:id", isLoggedIn, async (req, res) => {
 });
 
 // Render user address page for adding new address
-router.get("/userAddress/:productId", isLoggedIn, async function (req, res, next) {
+router.get(
+  "/userAddress/:productId",
+  isLoggedIn,
+  async function (req, res, next) {
     try {
       const productId = req.params.productId;
       console.log(productId);
@@ -320,32 +328,206 @@ router.get("/userAddress/:productId", isLoggedIn, async function (req, res, next
   }
 );
 
-// Check session data and store user order
-router.get("/checkSessionData/:userAddressId", isLoggedIn, async function (req, res) {
+//  payment page
+router.get("/paymentSuccessful",  function (req, res, next) {
+  res.render("paymentSuccessful");
+});
+
+// ! cheking
+
+router.get("/payment/:userAddressId", isLoggedIn, async function (req, res,next ) {
   const userId = req.session.userId;
   const productId = req.session.productId;
   const userAddressId = req.params.userAddressId;
-  console.log(userAddressId, productId, userId);
+
+  console.log(productId, userId, userAddressId);
 
   try {
-    // Create a new userOrderModal instance with the extracted data
+    // Fetch product details
+    const product = await productModal.findOne({ _id: productId });
+
+    // Placeholder function to retrieve user details
+    const { name } = await getUserDetails(userId);
+
+    // Use Stripe to create a payment session
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ["card"],
+      line_items: [
+        {
+          price_data: {
+            currency: "inr", // Defaulting to INR
+            product_data: {
+              name: product.productname,
+              // You can add more details about your product here
+            },
+            unit_amount: product.price * 100, // Convert price to cents
+          },
+          quantity: 1,
+        },
+      ],
+      mode: "payment",
+      success_url: "https://yourdomain.com/paymentSuccessful",
+      cancel_url: "https://yourdomain.com/paymentFailed",
+      customer_name: name, // Include customer name
+      billing_address_collection: "required", // Specify that billing address is required
+    });
+      const payment_id = session.id;
+
+    // Create a new user order
     const userOrder = new userOrderModal({
       user: userId,
       product: productId,
       userAddress: userAddressId,
+      payment_id: payment_id,
     });
 
-    // Save the userOrder data to the database
-    await userOrder.save(); // Use await here to ensure it's asynchronous
+    // Save the user order
+    await userOrder.save();
 
-    res.send("Data is stored in the session.");
+    // Redirect the user to the Stripe checkout page
+    res.redirect(session.url)
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
 });
 
+
+// Placeholder function to retrieve user details
+async function getUserDetails(userId) {
+  // Here, you should implement the logic to fetch user details from your database or session
+  // For demonstration purposes, let's assume you have a user model with name field
+  const user = await userModal.findById(userId); // Replace userModel with your actual user model
+  if (user) {
+    return {
+      name: user.name,
+    };
+  } else {
+    // Handle case where user details are not found
+    throw new Error("User details not found");
+  }
+}
+
+// ! working code
+//!.............................................................................................
+// router.get("/payment/:userAddressId", isLoggedIn, async function (req, res) {
+//   const userId = req.session.userId;
+//   const productId = req.session.productId;
+//   const userAddressId = req.params.userAddressId;
+//   console.log(userAddressId, productId, userId);
+
+//   try {
+//     // Perform additional checks to ensure the address is within India
+//     const isInIndia = isAddressInIndia(userAddressId);
+
+//     // Determine currency and allowed countries for address collection based on location
+//     let currency = 'inr'; // Default to INR
+//     let allowedCountries = ['IN']; // Default to India
+//     if (!isInIndia) {
+//       // For non-Indian addresses, use non-INR currency and allow countries outside India
+//       currency = 'usd'; // Use USD or any other non-INR currency code
+//       allowedCountries = ['US']; // Allow countries outside India (e.g., United States)
+//     }
+
+//     // Retrieve user's name and address from the database or session
+//     const { name, address } = await getUserDetails(userId); // Assuming you have a function to retrieve user details
+
+//     // Use Stripe to create a payment session
+//     const session = await stripe.checkout.sessions.create({
+//       payment_method_types: ['card'],
+//       line_items: [{
+//         price_data: {
+//           currency: currency, // Use appropriate currency based on location
+//           product_data: {
+//             name: 'Your Product Name',
+//             // You can add more details about your product here
+//           },
+//           unit_amount: 1000, // Amount in cents
+//         },
+//         quantity: 1,
+//       }],
+//       mode: 'payment',
+//       success_url: 'https://yourdomain.com/paymentSuccessful',
+//       cancel_url: 'https://yourdomain.com/paymentFailed',
+//       customer_name: name, // Include customer name
+//       billing_address_collection: 'required', // Specify that billing address is required
+//       shipping_address_collection: {
+//         allowed_countries: allowedCountries // Allow appropriate countries based on location
+//       }
+//     });
+
+//     // Redirect the user to the Stripe checkout page
+//     res.redirect(session.url);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
+//!............................................................................................
+// Placeholder function to retrieve user details
+async function getUserDetails(userId) {
+  // Here, you should implement the logic to fetch user details from your database or session
+  // For demonstration purposes, let's assume you have a user model with name and address fields
+  const user = await userModal.findById(userId); // Replace userModel with your actual user model
+  if (user) {
+    return {
+      name: user.name,
+      address: user.address,
+    };
+  } else {
+    // Handle case where user details are not found
+    throw new Error("User details not found");
+  }
+}
+
+// Function to check if the address is within India
+function isAddressInIndia(userAddressId) {
+  // Implement your logic to validate the address
+  // You may use third-party services or APIs for address validation
+  // Here, you need to fetch the user address details from your database or any other source
+  // and then determine if it's within India. For demonstration, let's assume it's within India.
+  const userAddress = fetchUserAddressDetails(userAddressId); // This is a placeholder function
+  return userAddress.country === "India";
+}
+
+// Placeholder function to fetch user address details from the database
+function fetchUserAddressDetails(userAddressId) {
+  // Replace this with your actual logic to fetch address details from your database
+  // For demonstration, let's assume the address is hardcoded here
+  return {
+    country: "India", // Assuming the country is part of the address details
+    // Add other address details as required
+  };
+}
+
+//!.......................
+// !Check session data and store user order
+// router.get("/payment/:userAddressId", isLoggedIn, async function (req, res) {
+//   const userId = req.session.userId;
+//   const productId = req.session.productId;
+//   const userAddressId = req.params.userAddressId;
+//   console.log(userAddressId, productId, userId);
+
+//   try {
+//     // Create a new userOrderModal instance with the extracted data
+//     const userOrder = new userOrderModal({
+//       user: userId,
+//       product: productId,
+//       userAddress: userAddressId,
+//     });
+
+//     // Save the userOrder data to the database
+//     await userOrder.save(); // Use await here to ensure it's asynchronous
+
+//     res.redirect('/paymentSuccessful');
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Internal Server Error");
+//   }
+// });
+
 // Show user order details
+
 router.get("/userOrder/:orderId", isLoggedIn, async (req, res) => {
   try {
     // Assuming you have a parameter named orderId in the URL
@@ -372,8 +554,8 @@ router.get("/userOrder/:orderId", isLoggedIn, async (req, res) => {
 });
 
 // Render success page after storing address
-router.get("/address-storeosuccessfullly", function (req, res) {
-  res.render("address-storeosuccessfullly");
+router.get("/address-storeosuccessfully", function (req, res) {
+  res.render("address-storeosuccessfully");
 });
 
 // Handle adding user address
@@ -404,17 +586,67 @@ router.post("/userAddress", isLoggedIn, async function (req, res) {
 
     // Save the updated user with the new user address reference
     await userId.save();
-    res.status(200).render("address-storeosuccessfullly");
+    res.status(200).render("address-storeosuccessfully");
   } catch (error) {
     console.error("Error submitting user address:", error);
     res.status(500).send("Internal Server Error");
   }
 });
+
+// dalete address
+router.get("/deleteAddress", isLoggedIn, (req, res) => {
+  res.render("deleteAddress");
+});
+router.get("/deleteAddress/:Address_id", isLoggedIn, async function (req, res) {
+  try {
+    //  you have the user ID from the logged-in user
+    const userId = req.user._id;
+    const AddtressToDelete = req.params.Address_id;
+
+    // Find the user by ID and update the 'userAdress' array by removing the specified product ID
+    const updatedUserAddress = await userModal.findByIdAndUpdate(
+      userId,
+      { $pull: { userAddressId: AddtressToDelete } },
+      { new: true }
+    );
+
+    if (!updatedUserAddress) {
+      return res.status(404).send("User not found");
+    }
+
+    // Redirect to the "profile-likeProduct" page
+    res.redirect("/deleteAddress");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
 //! Handle adding user address
-router.get("/userorder", (req, res) => {});
+router.get("/admin-datas/order-details", isLoggedInAdmin, async (req, res) => {
+  try {
+    // Correct the query to use findOne
+    const userOrderdata = await userOrderModal
+      .find()
+      .populate("user")
+      .populate("product")
+      .populate("userAddress");
+
+    console.log(userOrderdata);
+
+    //  res.status(200).send(userOrderdata)
+    res.render("admin-datas/order-details", { userOrderdata });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 // Delete user address
-router.delete("/deleteAddress/:addressId", isLoggedIn, async function (req, res, next) {
+router.delete(
+  "/deleteAddress/:addressId",
+  isLoggedIn,
+  async function (req, res, next) {
     try {
       const userId = req.user._id;
       const addressIdToDelete = req.params.addressId;
@@ -457,8 +689,9 @@ router.get("/login", function (req, res, next) {
 });
 
 // Render login page
-router.post("/login",
-   passport.authenticate("local", {
+router.post(
+  "/login",
+  passport.authenticate("local", {
     successRedirect: "/profile",
     failureRedirect: "/login",
     failureFlash: true,
@@ -493,7 +726,10 @@ router.get("/admin", isLoggedInAdmin, function (req, res, next) {
 });
 
 // Render user data for admin
-router.get("/admin-datas/user-data", isLoggedIn, async function (req, res, next) {
+router.get(
+  "/admin-datas/user-data",
+  isLoggedIn,
+  async function (req, res, next) {
     try {
       const user_data = await userModal.find();
       res.render("admin-datas/user-data", { user_data });
@@ -505,7 +741,10 @@ router.get("/admin-datas/user-data", isLoggedIn, async function (req, res, next)
 );
 
 // Render product data for admin
-router.get("/admin-datas/product-data", isLoggedInAdmin , async function (req, res, next) {
+router.get(
+  "/admin-datas/product-data",
+  isLoggedInAdmin,
+  async function (req, res, next) {
     try {
       const product_data = await productModal.find();
       res.render("admin-datas/product-data", { product_data });
@@ -516,83 +755,99 @@ router.get("/admin-datas/product-data", isLoggedInAdmin , async function (req, r
   }
 );
 
-router.get("/admin-datas/delete-product/:id", isLoggedInAdmin, async (req, res) => {
-  const productId = req.params.id;
-  try {
-    await productModal.findByIdAndDelete(productId);
-    res.redirect("/admin-datas/product-data");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+router.get(
+  "/admin-datas/delete-product/:id",
+  isLoggedInAdmin,
+  async (req, res) => {
+    const productId = req.params.id;
+    try {
+      await productModal.findByIdAndDelete(productId);
+      res.redirect("/admin-datas/product-data");
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
   }
-});
+);
 
 // Handle editing a product
-router.get("/admin-datas/edit-product/:id", isLoggedInAdmin, async (req, res) => {
-  const productId = req.params.id;
-  try {
-    const product = await productModal.findById(productId);
-    res.render("admin-datas/edit-product", { product });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+router.get(
+  "/admin-datas/edit-product/:id",
+  isLoggedInAdmin,
+  async (req, res) => {
+    const productId = req.params.id;
+    try {
+      const product = await productModal.findById(productId);
+      res.render("admin-datas/edit-product", { product });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
   }
-});
-
-
+);
 
 //! Update product route
-router.post("/admin-datas/edit-product/:id", isLoggedInAdmin, async (req, res) => {
-  const productId = req.params.id;
-  const updatedData = req.body;
-  // Convert 'on' string to true, and undefined to false for the 'availability' field
-  updatedData.availability = updatedData.availability === "on";
-  try {
-    // Extract variants from the request body
-    const updatedVariants = updatedData.variants || [];
+router.post(
+  "/admin-datas/edit-product/:id",
+  isLoggedInAdmin,
+  async (req, res) => {
+    const productId = req.params.id;
+    const updatedData = req.body;
+    // Convert 'on' string to true, and undefined to false for the 'availability' field
+    updatedData.availability = updatedData.availability === "on";
+    try {
+      // Extract variants from the request body
+      const updatedVariants = updatedData.variants || [];
 
-    // Use findByIdAndUpdate to update the product with the specified ID
-    const updatedProduct = await productModal.findByIdAndUpdate(
-      productId,
-      {
-        $set: {
-          productname: updatedData.productName,
-          description: updatedData.description,
-          category: updatedData.category,
-          price: updatedData.price,
-          stockQuantity: updatedData.stockQuantity,
-          gender: updatedData.gender,
-          images: updatedData.images,
-          availability: updatedData.availability,
-          manufacturer: updatedData.manufacturer,
-          // Update the "variants" field using the positional $ operator
-          "variants.$": updatedVariants,
-          // Add other fields as needed
+      // Use findByIdAndUpdate to update the product with the specified ID
+      const updatedProduct = await productModal.findByIdAndUpdate(
+        productId,
+        {
+          $set: {
+            productname: updatedData.productName,
+            description: updatedData.description,
+            category: updatedData.category,
+            price: updatedData.price,
+            stockQuantity: updatedData.stockQuantity,
+            gender: updatedData.gender,
+            images: updatedData.images,
+            availability: updatedData.availability,
+            manufacturer: updatedData.manufacturer,
+            // Update the "variants" field using the positional $ operator
+            "variants.$": updatedVariants,
+            // Add other fields as needed
+          },
         },
-      },
-      { new: true } // Return the updated document
-    );
+        { new: true } // Return the updated document
+      );
 
-    if (!updatedProduct) {
-      return res.status(404).send("Product not found");
+      if (!updatedProduct) {
+        return res.status(404).send("Product not found");
+      }
+
+      res.redirect("/admin-datas/product-data");
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
     }
-
-    res.redirect("/admin-datas/product-data");
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
   }
-});
-
+);
 
 //! Add product route
-router.get("/admin-datas/addproduct", isLoggedInAdmin, function (req, res, next) {
-  res.render("admin-datas/addproduct");
-});
+router.get(
+  "/admin-datas/addproduct",
+  isLoggedInAdmin,
+  function (req, res, next) {
+    res.render("admin-datas/addproduct");
+  }
+);
 
-router.post("/admin-datas/addproduct",isLoggedInAdmin, upload.array("images", 4), async function (req, res) {
-   
-  try {
+router.post(
+  "/admin-datas/addproduct",
+  isLoggedInAdmin,
+  upload.array("images", 4),
+  async function (req, res) {
+    try {
       const images = req.files.map((file) => path.basename(file.path));
       const variants = getVariantsFromRequest(req.body);
 
@@ -633,12 +888,14 @@ router.post("/admin-datas/addproduct",isLoggedInAdmin, upload.array("images", 4)
 
 //! show data in profilr page
 
-router.get("/user-balt-pro",isLoggedIn, (req, res) => {
+router.get("/user-balt-pro", isLoggedIn, (req, res) => {
   // Render the hbs template and pass the cardData to it
   res.render("productModal", { cardData });
 });
 
-router.get("/profile-card/user-balt-pro",isLoggedIn,
+router.get(
+  "/profile-card/user-balt-pro",
+  isLoggedIn,
   async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
@@ -653,7 +910,10 @@ router.get("/profile-card/user-balt-pro",isLoggedIn,
   }
 );
 
-router.get("/profile-card/user-mal-walltes-pro", isLoggedIn, async function (req, res, next) {
+router.get(
+  "/profile-card/user-mal-walltes-pro",
+  isLoggedIn,
+  async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
       const product_data = await productModal.find({ category: "wallet" });
@@ -667,7 +927,10 @@ router.get("/profile-card/user-mal-walltes-pro", isLoggedIn, async function (req
   }
 );
 
-router.get("/profile-card/user-optical-pro", isLoggedIn, async function (req, res, next) {
+router.get(
+  "/profile-card/user-optical-pro",
+  isLoggedIn,
+  async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
       const product_data = await productModal.find({ category: "optical" });
@@ -681,7 +944,10 @@ router.get("/profile-card/user-optical-pro", isLoggedIn, async function (req, re
   }
 );
 
-router.get("/profile-card/user-optical-pro", isLoggedIn, async function (req, res, next) {
+router.get(
+  "/profile-card/user-optical-pro",
+  isLoggedIn,
+  async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
       const product_data = await productModal.find({ category: "optical" });
@@ -695,7 +961,10 @@ router.get("/profile-card/user-optical-pro", isLoggedIn, async function (req, re
   }
 );
 
-router.get("/profile-card/user-sunglassis-pro", isLoggedIn, async function (req, res, next) {
+router.get(
+  "/profile-card/user-sunglassis-pro",
+  isLoggedIn,
+  async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
       const product_data = await productModal.find({ category: "sunglassis" });
@@ -709,7 +978,10 @@ router.get("/profile-card/user-sunglassis-pro", isLoggedIn, async function (req,
   }
 );
 
-router.get("/profile-card/user-watches-pro", isLoggedIn, async function (req, res, next) {
+router.get(
+  "/profile-card/user-watches-pro",
+  isLoggedIn,
+  async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
       const product_data = await productModal.find({ category: "watches" });
@@ -724,9 +996,13 @@ router.get("/profile-card/user-watches-pro", isLoggedIn, async function (req, re
 );
 
 //! Order details route
-router.get("/admin-datas/order-details", isLoggedInAdmin, function (req, res, next) {
-  res.render("admin-datas/order-details");
-});
+router.get(
+  "/admin-datas/order-details",
+  isLoggedInAdmin,
+  function (req, res, next) {
+    res.render("admin-datas/order-details");
+  }
+);
 
 //! Logout route
 router.get("/logout", function (req, res) {
