@@ -285,6 +285,7 @@ router.post("/verify", async function (req, res, next) {
   }
 });*/
 
+
 // Delete user data
 router.get("/admin-datas/delete-userData/:id", isLoggedIn, async (req, res) => {
   const userId = req.params.id;
