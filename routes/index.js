@@ -1,6 +1,7 @@
 // Import required modules
 var express = require("express"); // Import the Express.js framework
 var router = express.Router(); // Create a router instance
+require("dotenv").config();
 const userModal = require("./models/users"); // Import the user model
 const productModal = require("./models/products"); // Import the product model
 const userAddressModal = require("./models/userAddress"); // Import the user address model
@@ -9,12 +10,10 @@ const passport = require("passport"); // Import Passport.js for user authenticat
 const localStrategy = require("passport-local").Strategy; // Import Passport.js local strategy
 const multer = require("multer"); // Import multer for handling file uploads
 const twilio = require("twilio"); // Import Twilio API for sending SMS messages
-const accountSid = "AC3778768b665454fc9796bf452df3ba07"; // Twilio account SID
-const authToken = "47ff63cd04ba0749aa88c772e22c60c4"; // Twilio authentication token
+const accountSid =process.env.Twilio_account_SID ; // Twilio account SID
+const authToken = process.env.Twilio_authentication_token; // Twilio authentication token
 const client = new twilio(accountSid, authToken); // Create Twilio client instance
-const stripe = require("stripe")(
-  "sk_test_51OuYzOSBd0rVtqIWXWsvesjYENxJoI8AgbYCFrPozbBLBcCE4QdnOqxpQOebbXRosdaeZuVYHYH0Qw2J79HgYnbH00tNRN2bcG"
-);
+const stripe = require("stripe")(process.env.Stripe_Id);
 
 const path = require("path"); // Import path module
 
@@ -366,8 +365,8 @@ router.get("/payment/:userAddressId", isLoggedIn, async function (req, res,next 
         },
       ],
       mode: "payment",
-      success_url: "https://yourdomain.com/paymentSuccessful",
-      cancel_url: "https://yourdomain.com/paymentFailed",
+      success_url: "http://localhost:3000/paymentSuccessful",
+      cancel_url: "https://localhost:3000/paymentFailed",
       customer_name: name, // Include customer name
       billing_address_collection: "required", // Specify that billing address is required
     });
@@ -407,63 +406,6 @@ async function getUserDetails(userId) {
     throw new Error("User details not found");
   }
 }
-
-// ! working code
-//!.............................................................................................
-// router.get("/payment/:userAddressId", isLoggedIn, async function (req, res) {
-//   const userId = req.session.userId;
-//   const productId = req.session.productId;
-//   const userAddressId = req.params.userAddressId;
-//   console.log(userAddressId, productId, userId);
-
-//   try {
-//     // Perform additional checks to ensure the address is within India
-//     const isInIndia = isAddressInIndia(userAddressId);
-
-//     // Determine currency and allowed countries for address collection based on location
-//     let currency = 'inr'; // Default to INR
-//     let allowedCountries = ['IN']; // Default to India
-//     if (!isInIndia) {
-//       // For non-Indian addresses, use non-INR currency and allow countries outside India
-//       currency = 'usd'; // Use USD or any other non-INR currency code
-//       allowedCountries = ['US']; // Allow countries outside India (e.g., United States)
-//     }
-
-//     // Retrieve user's name and address from the database or session
-//     const { name, address } = await getUserDetails(userId); // Assuming you have a function to retrieve user details
-
-//     // Use Stripe to create a payment session
-//     const session = await stripe.checkout.sessions.create({
-//       payment_method_types: ['card'],
-//       line_items: [{
-//         price_data: {
-//           currency: currency, // Use appropriate currency based on location
-//           product_data: {
-//             name: 'Your Product Name',
-//             // You can add more details about your product here
-//           },
-//           unit_amount: 1000, // Amount in cents
-//         },
-//         quantity: 1,
-//       }],
-//       mode: 'payment',
-//       success_url: 'https://yourdomain.com/paymentSuccessful',
-//       cancel_url: 'https://yourdomain.com/paymentFailed',
-//       customer_name: name, // Include customer name
-//       billing_address_collection: 'required', // Specify that billing address is required
-//       shipping_address_collection: {
-//         allowed_countries: allowedCountries // Allow appropriate countries based on location
-//       }
-//     });
-
-//     // Redirect the user to the Stripe checkout page
-//     res.redirect(session.url);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
-//!............................................................................................
 // Placeholder function to retrieve user details
 async function getUserDetails(userId) {
   // Here, you should implement the logic to fetch user details from your database or session
@@ -499,35 +441,7 @@ function fetchUserAddressDetails(userAddressId) {
     // Add other address details as required
   };
 }
-
-//!.......................
-// !Check session data and store user order
-// router.get("/payment/:userAddressId", isLoggedIn, async function (req, res) {
-//   const userId = req.session.userId;
-//   const productId = req.session.productId;
-//   const userAddressId = req.params.userAddressId;
-//   console.log(userAddressId, productId, userId);
-
-//   try {
-//     // Create a new userOrderModal instance with the extracted data
-//     const userOrder = new userOrderModal({
-//       user: userId,
-//       product: productId,
-//       userAddress: userAddressId,
-//     });
-
-//     // Save the userOrder data to the database
-//     await userOrder.save(); // Use await here to ensure it's asynchronous
-
-//     res.redirect('/paymentSuccessful');
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Internal Server Error");
-//   }
-// });
-
 // Show user order details
-
 router.get("/userOrder/:orderId", isLoggedIn, async (req, res) => {
   try {
     // Assuming you have a parameter named orderId in the URL
