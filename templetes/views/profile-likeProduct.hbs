@@ -64,15 +64,20 @@
         .btn-primary:hover {
             background-color: royalblue;
         }
+
+        .home-text{
+            position: absolute;
+            top: 150px;
+        }
     </style>
 </head>
 
 <body>
-    <h1>User Liked Products</h1>
+    <h1> Liked Products</h1>
     
        
     {{#if user}}   
-    <div>{{user._id}} </div>
+    {{!-- <div>{{user._id}} </div> --}}
     {{!-- {{ console.log(user._id)}} --}}
     {{#if user.like.length}}
     <div class="img">

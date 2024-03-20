@@ -10,10 +10,12 @@ const passport = require("passport"); // Import Passport.js for user authenticat
 const localStrategy = require("passport-local").Strategy; // Import Passport.js local strategy
 const multer = require("multer"); // Import multer for handling file uploads
 const twilio = require("twilio"); // Import Twilio API for sending SMS messages
-const accountSid =process.env.Twilio_account_SID ; // Twilio account SID
+const accountSid =  process.env.Twilio_account_SID ; // Twilio account SID
 const authToken = process.env.Twilio_authentication_token; // Twilio authentication token
 const client = new twilio(accountSid, authToken); // Create Twilio client instance
 const stripe = require("stripe")(process.env.Stripe_Id);
+const PhoneNumber = require('libphonenumber-js');
+const bcrypt = require('bcrypt');
 
 const path = require("path"); // Import path module
 
@@ -30,7 +32,6 @@ passport.use(new localStrategy(userModal.authenticate()));
 router.get("/", function (req, res, next) {
   res.render("index");
 });
-
 /* show cart page if user is not logged in */
 router.get("/cart", function (req, res, next) {
   // Render the cart page
@@ -137,43 +138,44 @@ router.get("/register", function (req, res, next) {
 });
 
 // Handle user registration
+// router.post("/register", async function (req, res, next) {
+//   // Registration logic
+//   try {
+//     const userData = new userModal({ ...req.body });
+//     const existingUserMobile = await userModal.findOne({
+//       mobile: req.body.mobile,
+//     });
+
+//     if (existingUserMobile) {
+//       return res.render("register", {
+//         errorMessages: ["A user with the given mobile number already exists."],
+//       });
+//     }
+
+//     await userModal.register(userData, req.body.password);
+//     passport.authenticate("local")(req, res, function () {
+//       res.redirect("/login");
+//     });
+//   } catch (error) {
+//     console.error("Registration error:", error);
+//     res.render("register", {
+//       errorMessages: [
+//         error.message || "An unexpected error occurred during registration.",
+//       ],
+//     });
+//   }
+// });
+
+ //! Register User using mobile otp authentication :
 router.post("/register", async function (req, res, next) {
-  // Registration logic
-  try {
-    const userData = new userModal({ ...req.body });
-    const existingUserMobile = await userModal.findOne({
-      mobile: req.body.mobile,
-    });
-
-    if (existingUserMobile) {
-      return res.render("register", {
-        errorMessages: ["A user with the given mobile number already exists."],
-      });
-    }
-
-    await userModal.register(userData, req.body.password);
-    passport.authenticate("local")(req, res, function () {
-      res.redirect("/login");
-    });
-  } catch (error) {
-    console.error("Registration error:", error);
-    res.render("register", {
-      errorMessages: [
-        error.message || "An unexpected error occurred during registration.",
-      ],
-    });
-  }
-});
-
-/* //! Register User using mobile otp authentication :
-router.post("/register", async function (req, res, next) {
-  try {
+  try {  
+    
     const userData = new userModal({
       username: req.body.username,
       mobile: req.body.mobile,
       password: req.body.password, // Fix: Assign the password field correctly
     });
-
+     console.log(client)  
     // Check if the mobile number already exists
     const existingUserMobile = await userModal.findOne({
       mobile: req.body.mobile,
@@ -209,17 +211,20 @@ router.post("/register", async function (req, res, next) {
 
     // Redirect to OTP verification page with mobile number
     res.redirect(`/verify?mobile=${req.body.mobile}`);
-  } catch (error) {
-    console.error("Registration error:", error);
-    res.render("register", {
-      errorMessages: [
-        error.message || "An unexpected error occurred during registration.",
-      ],
-    });
+  }  catch (error) {
+    if (error.code === 20003) {
+      // Twilio authentication error
+      console.error("Twilio authentication error:", error);
+      return res.render("error", { message: "Failed to authenticate with Twilio. Please check your Twilio credentials." });
+    } else {
+      // Other errors
+      console.error("Registration error:", error);
+      return res.render("error", { message: "An error occurred during registration." });
+    }
   }
-});*/
+  });
 
-/*//! Render OTP verification page
+//! Render OTP verification page
 router.get("/verify", function (req, res, next) {
   res.render("verify");
 });
@@ -227,6 +232,7 @@ router.get("/verify", function (req, res, next) {
 // Handle OTP verification for user registration
 router.post("/verify", async function (req, res, next) {
   try {
+    // console.log(accountSid);
     // Check if OTP from session matches the user-input OTP
     if (req.session.otp !== req.body.otp) {
       return res.render("verify", {
@@ -256,7 +262,17 @@ router.post("/verify", async function (req, res, next) {
       });
     }
 
-    // Clear the OTP after successful verification
+    // ! change password
+   
+    
+    router.post("/update_password", async (req, res) => {
+    
+    
+      
+    });
+    
+    
+    //! Clear the OTP after successful verification
     user.verificationCode = undefined;
 
     await userModal.register(user, storedUserData.password);
@@ -283,10 +299,10 @@ router.post("/verify", async function (req, res, next) {
       ],
     });
   }
-});*/
+});
 
 
-// Delete user data
+//! Delete user data
 router.get("/admin-datas/delete-userData/:id", isLoggedIn, async (req, res) => {
   const userId = req.params.id;
   try {
@@ -333,7 +349,7 @@ router.get("/paymentSuccessful",  function (req, res, next) {
   res.render("paymentSuccessful");
 });
 
-// ! cheking
+// ! payment using payment geteway. 
 
 router.get("/payment/:userAddressId", isLoggedIn, async function (req, res,next ) {
   const userId = req.session.userId;
@@ -393,20 +409,20 @@ router.get("/payment/:userAddressId", isLoggedIn, async function (req, res,next 
 });
 
 
-// Placeholder function to retrieve user details
-async function getUserDetails(userId) {
-  // Here, you should implement the logic to fetch user details from your database or session
-  // For demonstration purposes, let's assume you have a user model with name field
-  const user = await userModal.findById(userId); // Replace userModel with your actual user model
-  if (user) {
-    return {
-      name: user.name,
-    };
-  } else {
-    // Handle case where user details are not found
-    throw new Error("User details not found");
-  }
-}
+// // Placeholder function to retrieve user details
+// async function getUserDetails(userId) {
+//   // Here, you should implement the logic to fetch user details from your database or session
+//   // For demonstration purposes, let's assume you have a user model with name field
+//   const user = await userModal.findById(userId); // Replace userModel with your actual user model
+//   if (user) {
+//     return {
+//       name: user.name,
+//     };
+//   } else {
+//     // Handle case where user details are not found
+//     throw new Error("User details not found");
+//   }
+// }
 // Placeholder function to retrieve user details
 async function getUserDetails(userId) {
   // Here, you should implement the logic to fetch user details from your database or session
@@ -423,25 +439,9 @@ async function getUserDetails(userId) {
   }
 }
 
-// Function to check if the address is within India
-function isAddressInIndia(userAddressId) {
-  // Implement your logic to validate the address
-  // You may use third-party services or APIs for address validation
-  // Here, you need to fetch the user address details from your database or any other source
-  // and then determine if it's within India. For demonstration, let's assume it's within India.
-  const userAddress = fetchUserAddressDetails(userAddressId); // This is a placeholder function
-  return userAddress.country === "India";
-}
 
-// Placeholder function to fetch user address details from the database
-function fetchUserAddressDetails(userAddressId) {
-  // Replace this with your actual logic to fetch address details from your database
-  // For demonstration, let's assume the address is hardcoded here
-  return {
-    country: "India", // Assuming the country is part of the address details
-    // Add other address details as required
-  };
-}
+
+
 // Show user order details
 router.get("/userOrder/:orderId", isLoggedIn, async (req, res) => {
   try {
@@ -646,7 +646,7 @@ router.get(
   isLoggedIn,
   async function (req, res, next) {
     try {
-      const user_data = await userModal.find();
+      const user_data = await userModal.find({role: "user"});
       res.render("admin-datas/user-data", { user_data });
     } catch (error) {
       console.log(error);
@@ -928,6 +928,54 @@ router.get("/logout", function (req, res) {
     res.redirect("/");
   });
 });
+
+//!   product by gander 
+//  male
+router.get('/by_gender/male', isLoggedIn, async (req, res) => {
+  try {
+      // Fetch products for males from the database
+      const maleProducts = await productModal.find({ gender: 'male' });
+      // res.json(maleProducts);
+      res.render("by_gender/male", {maleProducts})
+  } catch (err) {
+      // console.error('Error fetching products for males:', err);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+router.get('/by_gender/female',isLoggedIn, async (req, res) => {
+  try {
+      // Fetch products for females from the database
+      const femaleProducts = await productModal.find({ gender: 'female' });
+      res.render("by_gender/female", {femaleProducts})
+  } catch (err) {
+      // console.error('Error fetching products for males:', err);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+router.get('/by_gender/kids',isLoggedIn, async (req, res) => {
+  try {
+      // Fetch products for kides from the database
+      const kidsProducts = await productModal.find({ gender: 'kids' });
+      res.render("by_gender/kids", {kidsProducts})
+  } catch (err) {
+      // console.error('Error fetching products for males:', err);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+router.get('/by_gender/forAll',isLoggedIn, async (req, res) => {
+  try {
+      // Fetch products for add from the database
+      const allProducts = await productModal.find();
+      res.render("by_gender/forAll", {allProducts})
+  } catch (err) {
+      // console.error('Error fetching products for males:', err);
+      res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+
+
 
 // Middleware to check if the user is authenticated
 function isLoggedIn(req, res, next) {

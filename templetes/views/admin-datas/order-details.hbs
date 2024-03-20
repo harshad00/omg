@@ -6,6 +6,93 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="../../stylesheets/admin.css">
+    <style>
+
+        .page-data{
+            overflow: hidden;
+        }
+        .box {
+            overflow-x: auto;
+            position: relative;
+            left: 230px;
+        }
+
+              <style>
+        .page-data {
+            overflow: hidden;
+        }
+
+        .box {
+            overflow-x: auto;
+            position: relative;
+            left: 230px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        @media screen and (max-width: 600px) {
+            .box {
+                overflow-x: auto;
+                position: relative;
+                left: 0;
+            }
+
+            table {
+                width: 100%;
+            }
+
+            /* Hide the table header in smaller screens */
+            table thead {
+                display: none;
+            }
+
+            /* Display table rows as blocks for smaller screens */
+            table tr {
+                display: block;
+                border-bottom: 1px solid #ddd;
+                margin-bottom: 10px;
+            }
+
+            /* Display table cells as block */
+            table td {
+                display: block;
+                text-align: right;
+                border-bottom: none;
+            }
+
+            /* Add padding to the table cells */
+            table td {
+                padding-left: 50%;
+                text-align: left;
+                position: relative;
+            }
+
+            /* Add padding to the table cells */
+            table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding-left: 15px;
+                font-weight: bold;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -24,6 +111,16 @@
     <main>
         <div id="page-data">
             <h2>Order Details Page</h2>
+             <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search...">
+                <select id="filterBy">
+                    <option value="username">User Name</option>
+                    <option value="order_id">Order ID</option>
+                    <option value="product._id">Product ID</option>
+                </select>
+                <button onclick="performSearch()">Search</button>
+            </div>
+            <div class="box">
             <table>
                 <tr>
                     <th>Username</th>
@@ -53,10 +150,44 @@
                 </tr>
                 {{/each}}
             </table>
+            </div>
 
         </div>
     </main>
 
+    <script>
+        // Function to filter table rows based on input values
+        function performSearch() {
+            var searchInput = document.getElementById("searchInput").value.toUpperCase();
+            var filterBy = document.getElementById("filterBy").value;
+            var rows = document.querySelector(".box table").getElementsByTagName("tr");
+
+            for (var i = 1; i < rows.length; i++) {
+                var columnValue = rows[i].getElementsByTagName("td")[getIndexOfColumn(filterBy)].innerText.toUpperCase();
+
+                // Check if the column value matches the search input
+                if (columnValue.indexOf(searchInput) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+
+        // Function to get the index of the selected column
+        function getIndexOfColumn(columnName) {
+            switch (columnName) {
+                case 'username':
+                    return 0;
+                case 'order_id':
+                    return 1;
+                case 'product._id':
+                    return 2;
+                default:
+                    return 0; // Default to Username column
+            }
+        }
+    </script>
 
 </body>
 
