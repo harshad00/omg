@@ -10,12 +10,11 @@ const passport = require("passport"); // Import Passport.js for user authenticat
 const localStrategy = require("passport-local").Strategy; // Import Passport.js local strategy
 const multer = require("multer"); // Import multer for handling file uploads
 const twilio = require("twilio"); // Import Twilio API for sending SMS messages
-const accountSid =  process.env.Twilio_account_SID ; // Twilio account SID
+const accountSid = process.env.Twilio_account_SID; // Twilio account SID
 const authToken = process.env.Twilio_authentication_token; // Twilio authentication token
 const client = new twilio(accountSid, authToken); // Create Twilio client instance
 const stripe = require("stripe")(process.env.Stripe_Id);
-const PhoneNumber = require('libphonenumber-js');
-const bcrypt = require('bcrypt');
+const PhoneNumber = require("libphonenumber-js");
 
 const path = require("path"); // Import path module
 
@@ -166,25 +165,34 @@ router.get("/register", function (req, res, next) {
 //   }
 // });
 
- //! Register User using mobile otp authentication :
+//! Register User using mobile otp authentication :
 router.post("/register", async function (req, res, next) {
-  try {  
-    
+  try {
     const userData = new userModal({
       username: req.body.username,
       mobile: req.body.mobile,
       password: req.body.password, // Fix: Assign the password field correctly
     });
-     console.log(client)  
+    console.log(client);
     // Check if the mobile number already exists
     const existingUserMobile = await userModal.findOne({
       mobile: req.body.mobile,
     });
+    const existingUsername = await userModal.findOne({
+      username: req.body.username,
+    });
 
-    if (existingUserMobile) {
-      return res.render("register", {
-        errorMessages: ["A user with the given mobile number already exists."],
-      });
+    if (existingUserMobile || existingUsername) {
+      let errorMessages = [];
+      if (existingUserMobile) {
+        errorMessages.push(
+          "A user with the given mobile number already exists."
+        );
+      }
+      if (existingUsername) {
+        errorMessages.push("A user with the given username already exists.");
+      }
+      return res.render("register", { errorMessages });
     }
 
     // Generate OTP and store it in the session
@@ -211,21 +219,26 @@ router.post("/register", async function (req, res, next) {
 
     // Redirect to OTP verification page with mobile number
     res.redirect(`/verify?mobile=${req.body.mobile}`);
-  }  catch (error) {
+  } catch (error) {
     if (error.code === 20003) {
       // Twilio authentication error
       console.error("Twilio authentication error:", error);
-      return res.render("error", { message: "Failed to authenticate with Twilio. Please check your Twilio credentials." });
+      return res.render("error", {
+        message:
+          "Failed to authenticate with Twilio. Please check your Twilio credentials.",
+      });
     } else {
       // Other errors
       console.error("Registration error:", error);
-      return res.render("error", { message: "An error occurred during registration." });
+      return res.render("error", {
+        message: "An error occurred during registration.",
+      });
     }
   }
-  });
+});
 
 //! Render OTP verification page
-router.get("/verify", function (req, res, next) {
+router.get("/verify",  function (req, res, next) {
   res.render("verify");
 });
 
@@ -262,16 +275,6 @@ router.post("/verify", async function (req, res, next) {
       });
     }
 
-    // ! change password
-   
-    
-    router.post("/update_password", async (req, res) => {
-    
-    
-      
-    });
-    
-    
     //! Clear the OTP after successful verification
     user.verificationCode = undefined;
 
@@ -300,7 +303,6 @@ router.post("/verify", async function (req, res, next) {
     });
   }
 });
-
 
 //! Delete user data
 router.get("/admin-datas/delete-userData/:id", isLoggedIn, async (req, res) => {
@@ -345,84 +347,73 @@ router.get(
 );
 
 //  payment page
-router.get("/paymentSuccessful",  function (req, res, next) {
+router.get("/paymentSuccessful", function (req, res, next) {
   res.render("paymentSuccessful");
 });
 
-// ! payment using payment geteway. 
+// ! payment using payment geteway.
 
-router.get("/payment/:userAddressId", isLoggedIn, async function (req, res,next ) {
-  const userId = req.session.userId;
-  const productId = req.session.productId;
-  const userAddressId = req.params.userAddressId;
+router.get(
+  "/payment/:userAddressId",
+  isLoggedIn,
+  async function (req, res, next) {
+    const userId = req.session.userId;
+    const productId = req.session.productId;
+    const userAddressId = req.params.userAddressId;
 
-  console.log(productId, userId, userAddressId);
+    console.log(productId, userId, userAddressId);
 
-  try {
-    // Fetch product details
-    const product = await productModal.findOne({ _id: productId });
+    try {
+      // Fetch product details
+      const product = await productModal.findOne({ _id: productId });
 
-    // Placeholder function to retrieve user details
-    const { name } = await getUserDetails(userId);
+      // Placeholder function to retrieve user details
+      const { name } = await getUserDetails(userId);
 
-    // Use Stripe to create a payment session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price_data: {
-            currency: "inr", // Defaulting to INR
-            product_data: {
-              name: product.productname,
-              // You can add more details about your product here
+      // Use Stripe to create a payment session
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price_data: {
+              currency: "inr", // Defaulting to INR
+              product_data: {
+                name: product.productname,
+                // You can add more details about your product here
+              },
+              unit_amount: product.price * 100, // Convert price to cents
             },
-            unit_amount: product.price * 100, // Convert price to cents
+            quantity: 1,
           },
-          quantity: 1,
-        },
-      ],
-      mode: "payment",
-      success_url: "http://localhost:3000/paymentSuccessful",
-      cancel_url: "https://localhost:3000/paymentFailed",
-      customer_name: name, // Include customer name
-      billing_address_collection: "required", // Specify that billing address is required
-    });
+        ],
+        mode: "payment",
+        success_url: "http://localhost:3000/paymentSuccessful",
+        cancel_url: "https://localhost:3000/paymentFailed",
+        customer_name: name, // Include customer name
+        billing_address_collection: "required", // Specify that billing address is required
+      });
       const payment_id = session.id;
 
-    // Create a new user order
-    const userOrder = new userOrderModal({
-      user: userId,
-      product: productId,
-      userAddress: userAddressId,
-      payment_id: payment_id,
-    });
+      // Create a new user order
+      const userOrder = new userOrderModal({
+        user: userId,
+        product: productId,
+        userAddress: userAddressId,
+        payment_id: payment_id,
+      });
 
-    // Save the user order
-    await userOrder.save();
+      // Save the user order
+      await userOrder.save();
 
-    // Redirect the user to the Stripe checkout page
-    res.redirect(session.url)
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+      // Redirect the user to the Stripe checkout page
+      res.redirect(session.url);
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
   }
-});
+);
 
-
-// // Placeholder function to retrieve user details
-// async function getUserDetails(userId) {
-//   // Here, you should implement the logic to fetch user details from your database or session
-//   // For demonstration purposes, let's assume you have a user model with name field
-//   const user = await userModal.findById(userId); // Replace userModel with your actual user model
-//   if (user) {
-//     return {
-//       name: user.name,
-//     };
-//   } else {
-//     // Handle case where user details are not found
-//     throw new Error("User details not found");
-//   }
-// }
 // Placeholder function to retrieve user details
 async function getUserDetails(userId) {
   // Here, you should implement the logic to fetch user details from your database or session
@@ -438,9 +429,6 @@ async function getUserDetails(userId) {
     throw new Error("User details not found");
   }
 }
-
-
-
 
 // Show user order details
 router.get("/userOrder/:orderId", isLoggedIn, async (req, res) => {
@@ -646,7 +634,7 @@ router.get(
   isLoggedIn,
   async function (req, res, next) {
     try {
-      const user_data = await userModal.find({role: "user"});
+      const user_data = await userModal.find({ role: "user" });
       res.render("admin-datas/user-data", { user_data });
     } catch (error) {
       console.log(error);
@@ -802,7 +790,6 @@ router.post(
 );
 
 //! show data in profilr page
-
 router.get("/user-balt-pro", isLoggedIn, (req, res) => {
   // Render the hbs template and pass the cardData to it
   res.render("productModal", { cardData });
@@ -929,53 +916,49 @@ router.get("/logout", function (req, res) {
   });
 });
 
-//!   product by gander 
+//!   product by gander
 //  male
-router.get('/by_gender/male', isLoggedIn, async (req, res) => {
+router.get("/by_gender/male", isLoggedIn, async (req, res) => {
   try {
-      // Fetch products for males from the database
-      const maleProducts = await productModal.find({ gender: 'male' });
-      // res.json(maleProducts);
-      res.render("by_gender/male", {maleProducts})
+    // Fetch products for males from the database
+    const maleProducts = await productModal.find({ gender: "male" });
+    // res.json(maleProducts);
+    res.render("by_gender/male", { maleProducts });
   } catch (err) {
-      // console.error('Error fetching products for males:', err);
-      res.status(500).json({ error: 'Internal server error' });
+    // console.error('Error fetching products for males:', err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
-router.get('/by_gender/female',isLoggedIn, async (req, res) => {
+router.get("/by_gender/female", isLoggedIn, async (req, res) => {
   try {
-      // Fetch products for females from the database
-      const femaleProducts = await productModal.find({ gender: 'female' });
-      res.render("by_gender/female", {femaleProducts})
+    // Fetch products for females from the database
+    const femaleProducts = await productModal.find({ gender: "female" });
+    res.render("by_gender/female", { femaleProducts });
   } catch (err) {
-      // console.error('Error fetching products for males:', err);
-      res.status(500).json({ error: 'Internal server error' });
+    // console.error('Error fetching products for males:', err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
-router.get('/by_gender/kids',isLoggedIn, async (req, res) => {
+router.get("/by_gender/kids", isLoggedIn, async (req, res) => {
   try {
-      // Fetch products for kides from the database
-      const kidsProducts = await productModal.find({ gender: 'kids' });
-      res.render("by_gender/kids", {kidsProducts})
+    // Fetch products for kides from the database
+    const kidsProducts = await productModal.find({ gender: "kids" });
+    res.render("by_gender/kids", { kidsProducts });
   } catch (err) {
-      // console.error('Error fetching products for males:', err);
-      res.status(500).json({ error: 'Internal server error' });
+    // console.error('Error fetching products for males:', err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
-router.get('/by_gender/forAll',isLoggedIn, async (req, res) => {
+router.get("/by_gender/forAll", isLoggedIn, async (req, res) => {
   try {
-      // Fetch products for add from the database
-      const allProducts = await productModal.find();
-      res.render("by_gender/forAll", {allProducts})
+    // Fetch products for add from the database
+    const allProducts = await productModal.find();
+    res.render("by_gender/forAll", { allProducts });
   } catch (err) {
-      // console.error('Error fetching products for males:', err);
-      res.status(500).json({ error: 'Internal server error' });
+    // console.error('Error fetching products for males:', err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
-
-
-
-
 
 // Middleware to check if the user is authenticated
 function isLoggedIn(req, res, next) {
