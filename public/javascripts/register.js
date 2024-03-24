@@ -22,4 +22,18 @@ document.getElementById('numberInput')
         this.setCustomValidity('');
       }
     });
+
+    // password
+    document.getElementById("registrationForm").addEventListener("submit", function(event) {
+      var passwordInput = document.getElementById("passwordInput");
+      var passwordError = document.getElementById("passwordError");
+      var password = passwordInput.value;
+      
+      if (password.length < 5 || password.length > 18) {
+          passwordError.textContent = "Password must be between 5 and 18 characters";
+          event.preventDefault(); // Prevent form submission
+      } else {
+          passwordError.textContent = ""; // Clear previous error message
+      }
+  });
    

@@ -6,23 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Card</title>
     <link rel="stylesheet" href="../../../stylesheets/cart-data.css">
-    <style> 
-        .hero{
-            display: flex;
-            justify-content: center;
-            margin: 1rem 0px ;
-        }
-        
-         </style>
+   
 </head>
 
 <body>
     {{> nav}}  
-        <div class="hero"><h1> Male  Belts </h1> </div>
+     <div class="hero"><h1> Male  Belts </h1> </div>
     <div id="dynamicCards" class="img"></div>
 
     <script>
-        // Sample data
     const cardData = [
     {
         imageSrc: "../../../images/cart-data/belts/balt1.jpg",
@@ -95,9 +87,6 @@
         text: "Versatile reversible belt with different colors on each side. Get two looks in one with this practical accessory.",
     },
 ];
-
-
-
         // Function to create dynamic cards
         function createCards() {
             const dynamicCards = document.getElementById("dynamicCards");
@@ -180,12 +169,9 @@
 
         // Function to check if the user is logged in (replace with your actual authentication logic)
         function isUserLoggedIn() {
-            // Replace this with your actual authentication logic (e.g., checking a session or token)
-            // For demonstration purposes, always return false (not logged in)
             return false;
         }
-
-        // Call the function to create the dynamic cards
+       // Call the function to create the dynamic cards
         createCards();
     </script>
 </body>

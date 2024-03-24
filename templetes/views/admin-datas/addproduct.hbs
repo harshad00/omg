@@ -1,6 +1,5 @@
 
-
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -26,15 +25,12 @@
         <div id="page-data">
              <div class="container">
                 <h2>Add Product</h2>
-                <form id="productForm" action="/admin-datas/addproduct" method="post" enctype="multipart/form-data">
-                    <label for="productname">Product Name:</label>
+                <form id="productForm" action="/admin-datas/addproduct" method="post" enctype="multipart/form-data" onsubmit="removeSpaces()">
+                    <label for="productName">Product Name:</label>
                     <input type="text" id="productName" name="productname" required>
 
                     <label for="description">Description:</label>
                     <textarea id="description" name="description" rows="4" required></textarea>
-
-                     <!-- Category Label and Options -->
-                     
                     <label>Category:</label>
                     <div class="category-options">
                         <input type="radio" id="optical" name="category" value="Optical" class="radio-btn" required>
@@ -46,18 +42,15 @@
                         <input type="radio" id="watches" name="category" value="Watches" class="radio-btn" required>
                         <label for="watches">Watches</label>
 
-                        <input type="radio" id="belts" name="category" value="Belts" class="radio-btn" required>
+                        <input type="radio" id="belts" name="category" value="Belt" class="radio-btn" required>
                         <label for="belts">Belts</label>
 
-                        <input type="radio" id="wallets" name="category" value="Wallets" class="radio-btn" required>
+                        <input type="radio" id="wallets" name="category" value="Wallet" class="radio-btn" required>
                         <label for="wallets">Wallets</label>
                     </div>
 
                     <div class="gender_dev">
-                        <!-- Inside the form, before the Category input -->
-                        <!-- Checkbox inputs in your form -->
-                        
-                    <label for="price">Gender:</label>
+                    <label for="gender">Gender:</label>
                         <input type="checkbox" name="gender" value="male"> Male
                         <input type="checkbox" name="gender" value="female"> Female
                         <input type="checkbox" name="gender" value="kids"> Kids
@@ -69,7 +62,7 @@
                     <label for="stockQuantity">Stock Quantity:</label>
                     <input type="number" id="stockQuantity" name="stockQuantity" required>
 
-                    <label for="images">Images (comma-separated URLs):</label>
+                    <label for="images">Product Image:</label>
                     <input type="file" id="images" name="images" accept="image/*"  required>
 
                     <label for="availability">Availability:</label>
@@ -79,45 +72,28 @@
                     </select>
                     <label for="manufacturer">Manufacturer:</label>
                    <input type="text" id="manufacturer" name="manufacturer" required>
-                 
-                 {{!-- ! have some error  --}}
-                  {{!--    <div id="variantsContainer">
-                        <label>Variants:</label>
-                        <div class="variant">
-                            <input type="text" name="variantSize[]" placeholder="Size" multiple>
-                            <input type="text" name="variantColor[]" placeholder="Color">
-                            <input type="number" name="variantPrice[]" placeholder="Price">
-                            <input type="number" name="variantStockQuantity[]" placeholder="Stock Quantity">
-                            <select name="variantAvailability[]" placeholder="Availability">
-                                <option value="true">Available</option>
-                                <option value="false">Not Available</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button type="button" id="addVariant">Add Variant</button> --}}
-
                     <button class="submit_btn" type="submit">Submit</button>
                 </form>
             </div>
         </div>
     </main>
-  {{!--!   part of error --}}
-    {{!-- <script>
-        document.getElementById('addVariant').addEventListener('click', function () {
-            var variantsContainer = document.getElementById('variantsContainer');
-
-            // Clone the first variant div
-            var newVariantDiv = variantsContainer.querySelector('.variant').cloneNode(true);
-
-            // Clear input values in the cloned variant
-            newVariantDiv.querySelectorAll('input, select').forEach(function (element) {
-                element.value = '';
-            });
-
-            // Append the cloned variant div to the variants container
-            variantsContainer.appendChild(newVariantDiv);
-        });
-    </script> --}}
 </body>
+<script>
+    function removeSpaces() {
+        var productName = document.getElementById('productName');
+        var description = document.getElementById('description');
+        var price = document.getElementById('price');
+        var stockQuantity = document.getElementById('stockQuantity');
+        var manufacturer = document.getElementById('manufacturer');
+
+        // Remove leading and trailing spaces
+        productName.value = productName.value.trim();
+        description.value = description.value.trim();
+        price.value = price.value.trim();
+        stockQuantity.value = stockQuantity.value.trim();
+        manufacturer.value = manufacturer.value.trim();
+    }
+</script>
 
 </html>
+

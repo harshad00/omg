@@ -66,3 +66,7 @@ userSchema.methods.isValidPassword = async function (password) {
 
 userSchema.plugin(plm);
 module.exports = mongoose.model("User", userSchema);
+
+
+
+  

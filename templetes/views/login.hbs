@@ -20,13 +20,13 @@
     
         <form action="/login" method="post">
             <div class="form-control">
-                <input type="text" required name="username">
-                <label>username</label>
+                <input type="text" required placeholder="User Name" name="username">
+                {{!-- <label>username</label> --}}
             </div>
             <input type="hidden" name="role" value="user">
             <div class="form-control">
-                <input type="password" required name="password">
-                <label>Password</label>
+                <input type="password" required placeholder="Password" name="password">
+                {{!-- <label>Password</label> --}}
             </div>
            <input type="submit" class="btn" value="Login">
             {{!-- <p class="text"> <a href="update">Forgot Password</a></p> --}}

@@ -128,6 +128,13 @@ router.get("/profile", function (req, res) {
     res.redirect("/login");
   }
 });
+router.get("/userprofile", async function (req, res) {
+  const userId = req.user._id;
+    let userprofile =  await userModal.findOne(userId) 
+  res.render("userprofile" ,{ userprofile});
+});
+
+
 
 // Render registration page
 router.get("/register", function (req, res, next) {
@@ -168,11 +175,16 @@ router.get("/register", function (req, res, next) {
 //! Register User using mobile otp authentication :
 router.post("/register", async function (req, res, next) {
   try {
+    const trimmedUsername = req.body;
+    const trimmedPassword = req.body;
+
     const userData = new userModal({
-      username: req.body.username,
-      mobile: req.body.mobile,
-      password: req.body.password, // Fix: Assign the password field correctly
+        username: trimmedUsername,
+        mobile: req.body.mobile,
+        password: trimmedPassword,
     });
+console.log( userData.username);
+console.log( userData.password);
     console.log(client);
     // Check if the mobile number already exists
     const existingUserMobile = await userModal.findOne({
@@ -748,7 +760,7 @@ router.get(
 router.post(
   "/admin-datas/addproduct",
   isLoggedInAdmin,
-  upload.array("images", 4),
+  upload.array("images", 1),
   async function (req, res) {
     try {
       const images = req.files.map((file) => path.basename(file.path));
@@ -801,7 +813,7 @@ router.get(
   async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
-      const product_data = await productModal.find({ category: "balt" });
+      const product_data = await productModal.find({ category: "Belt" });
       // console.log(product_data);
 
       res.render("profile-card/user-balt-pro", { product_data });
@@ -818,8 +830,8 @@ router.get(
   async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
-      const product_data = await productModal.find({ category: "wallet" });
-      console.log(product_data);
+      const product_data = await productModal.find({ category: "Wallet" });
+      // console.log(product_data);
 
       res.render("profile-card/user-mal-walltes-pro", { product_data });
     } catch (error) {
@@ -835,7 +847,7 @@ router.get(
   async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
-      const product_data = await productModal.find({ category: "optical" });
+      const product_data = await productModal.find({ category: "Optical" });
       // console.log(product_data);
 
       res.render("profile-card/user-optical-pro", { product_data });
@@ -846,22 +858,7 @@ router.get(
   }
 );
 
-router.get(
-  "/profile-card/user-optical-pro",
-  isLoggedIn,
-  async function (req, res, next) {
-    try {
-      // Fetch only products with category "balt"
-      const product_data = await productModal.find({ category: "optical" });
-      console.log(product_data);
 
-      res.render("profile-card/user-optical-pro", { product_data });
-    } catch (error) {
-      console.log(error);
-      res.status(500).send("Internal Server Error");
-    }
-  }
-);
 
 router.get(
   "/profile-card/user-sunglassis-pro",
@@ -869,8 +866,8 @@ router.get(
   async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
-      const product_data = await productModal.find({ category: "sunglassis" });
-      console.log(product_data);
+      const product_data = await productModal.find({ category: "Sunglasses" });
+      // console.log(product_data);
 
       res.render("profile-card/user-sunglassis-pro", { product_data });
     } catch (error) {
@@ -886,8 +883,8 @@ router.get(
   async function (req, res, next) {
     try {
       // Fetch only products with category "balt"
-      const product_data = await productModal.find({ category: "watches" });
-      console.log(product_data);
+      const product_data = await productModal.find({ category: "Watches" });
+      // console.log(product_data);
 
       res.render("profile-card/user-watches-pro", { product_data });
     } catch (error) {
