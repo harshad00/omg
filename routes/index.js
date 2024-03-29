@@ -6,6 +6,7 @@ const userModal = require("./models/users"); // Import the user model
 const productModal = require("./models/products"); // Import the product model
 const userAddressModal = require("./models/userAddress"); // Import the user address model
 const userOrderModal = require("./models/userOrder"); // Import the user order model
+const userReqModal = require("./models/request"); // Import the user order model
 const passport = require("passport"); // Import Passport.js for user authentication
 const localStrategy = require("passport-local").Strategy; // Import Passport.js local strategy
 const multer = require("multer"); // Import multer for handling file uploads
@@ -31,6 +32,35 @@ passport.use(new localStrategy(userModal.authenticate()));
 router.get("/", function (req, res, next) {
   res.render("index");
 });
+// navbae text 
+router.get("/home/contact", function (req, res, next) { 
+               
+  res.render("home/contact");
+});
+router.post("/home/contact",  async function (req, res, next) {
+  try {
+    const userReq = new userReqModal({
+      req_name: req.body.name,
+      req_number: req.body.number,
+      email: req.body.email,
+      user_msg: req.body.usertext,
+    });
+  
+     console.log(userReq);
+    await userReq.save(); // Save the userReq instance to the database
+
+    res.render("home/contact" ,{ successMessage: "OMG team Connect You Soon" }); // Render the view after saving
+  } catch (error) {
+    // Handle errors appropriately
+    console.error("Error saving user request:", error);
+    res.status(500).send("Error saving user request");
+  }
+});
+//* end of  navbav text  
+// !  gallery
+router.get("/home/gallery", function (req, res, next) {
+  res.render("home/gallery");
+}) 
 /* show cart page if user is not logged in */
 router.get("/cart", function (req, res, next) {
   // Render the cart page
@@ -115,7 +145,7 @@ router.get(
 );
 
 // Assuming you have the required dependencies and setup for your Express app
-router.get("/profile", function (req, res) {
+router.get("/profile", isLoggedIn, function (req, res) {
   // Check the role of the authenticated user
   if (req.isAuthenticated() && req.user.role === "admin") {
     res.render("admin");
@@ -143,7 +173,7 @@ router.get("/register", function (req, res, next) {
   res.render("register");
 });
 
-// Handle user registration
+//!Handle user registration
 // router.post("/register", async function (req, res, next) {
 //   // Registration logic
 //   try {
@@ -335,7 +365,7 @@ router.get(
   async function (req, res, next) {
     try {
       const productId = req.params.productId;
-      console.log(productId);
+      // console.log(productId);
 
       // Assuming you have the user ID from the logged-in user
       const userId = req.user._id;
@@ -345,12 +375,12 @@ router.get(
         .findOne({ _id: userId })
         .populate("userAddressId");
 
-      console.log(userAddress);
+      // console.log(userAddress);
 
       // Store data in the session
       req.session.userId = userId;
       req.session.productId = productId;
-      res.render("userAddress", { userAddress });
+      res.render("userAddress/", { userAddress });
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal Server Error");
@@ -501,6 +531,7 @@ router.post("/userAddress", isLoggedIn, async function (req, res) {
 
     // Save the updated user with the new user address reference
     await userId.save();
+    // res.status(200).render("address-storeosuccessfully");
     res.status(200).render("address-storeosuccessfully");
   } catch (error) {
     console.error("Error submitting user address:", error);
@@ -685,6 +716,18 @@ router.get(
   }
 );
 
+//!  user Requert table 
+
+router.get("/admin-datas/userRequert", async function (req, res, next) {
+  try {
+    const userRequests = await userReqModal.find(); // Fetch all user requests from the database
+    res.render("admin-datas/userRequert", { userRequests }); // Render the view with userRequests data
+  } catch (error) {
+    // Handle errors appropriately
+    console.error("Error fetching user requests:", error);
+    res.status(500).send("Error fetching user requests");
+  }
+});
 // Handle editing a product
 router.get(
   "/admin-datas/edit-product/:id",
@@ -903,6 +946,18 @@ router.get(
   }
 );
 
+// ! Order details route for user
+router.get('/userOrserDetail', async (req, res) => {
+  try {
+      const userOrders = await userOrderModal.find()
+      .populate('user product userAddress')
+      .exec();
+      res.render('userOrserDetail', { userOrders }); // Assuming you're using a templating engine like EJS or Handlebars
+  } catch (error) {
+      console.error('Error fetching user orders:', error);
+      res.status(500).send('Internal Server Error');
+  }
+});
 //! Logout route
 router.get("/logout", function (req, res) {
   req.logout(function (err) {
@@ -956,6 +1011,14 @@ router.get("/by_gender/forAll", isLoggedIn, async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+//! footer Pages
+
+router.get("/footerpages/exe",(req, res ) => {
+
+  res.render("/footerpages/exe")
+})
+
 
 // Middleware to check if the user is authenticated
 function isLoggedIn(req, res, next) {

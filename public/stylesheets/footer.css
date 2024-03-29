@@ -23,14 +23,14 @@
     word-wrap: wrap;
 }
 
-.social-icon{
+/* .social-icon{
     width: 2rem;
     mix-blend-mode: color-burn;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 1rem;
-}
+} */
 
 /* footer-grid */
 .footer-grid{

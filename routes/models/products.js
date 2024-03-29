@@ -23,15 +23,15 @@ const productSchema = mongoose.Schema({
     //   }
     // ],
     "manufacturer": String,
-    "variants": [
-      {
-        "size": [String], 
-        "color": String,
-        "price": Number,
-        "stockQuantity": Number,
-        "availability": Boolean,
-      }
-    ],
+    // "variants": [
+    //   {
+    //     "size": [String], 
+    //     "color": String,
+    //     "price": Number,
+    //     "stockQuantity": Number,
+    //     "availability": Boolean,
+    //   }
+    // ],
   },
   {timestamps: true}
 );

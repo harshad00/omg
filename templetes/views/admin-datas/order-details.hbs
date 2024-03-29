@@ -17,7 +17,6 @@
             left: 230px;
         }
 
-              <style>
         .page-data {
             overflow: hidden;
         }
@@ -38,7 +37,7 @@
         td {
             padding: 8px;
             text-align: left;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 1px solid #fbfafa;
         }
 
         th {
@@ -105,6 +104,7 @@
         <a href="product-data">Product Data</a>
         <a href="addproduct">Add Product</a>
         <a href="order-details">Order Details</a>
+         <a href="userRequert">Uer Question</a>
         {{!-- <a href="user-data">User Data</a> --}}
     </nav>
 
@@ -120,7 +120,7 @@
                 </select>
                 <button onclick="performSearch()">Search</button>
             </div>
-            <div class="box">
+            <div class="box1">
             <table>
                 <tr>
                     <th>Username</th>
@@ -132,7 +132,7 @@
                     <th>Address</th>
                     <th>Payment Id</th>
                     <th>Date of Order</th>
-                    <th>Action</th>
+                    {{!-- <th>Action</th> --}}
                 </tr>
                 {{#each userOrderdata}}
                 <tr>
@@ -146,7 +146,7 @@
                         {{this.userAddress.address.state}}, {{this.userAddress.address.zipCode}}</td> <!-- Address -->
                     {{!-- <td>{{formatDate this.createdAt}}</td> <!-- Date of Order --> --}}
                     <td><a href="#" class="cancel-btn">{{this.payment_id}}</a></td> <!-- Cancel Button -->
-                    <td><a href="#" class="cancel-btn">Cancel</a></td> <!-- Cancel Button -->
+                    <td>{{this.createdAt}}</td> <!-- Cancel Button -->
                 </tr>
                 {{/each}}
             </table>

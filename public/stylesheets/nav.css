@@ -32,12 +32,12 @@
 .nav-text ul li a{
     text-decoration: none;
     color: black;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     transition: all .3s;
    
 }
 .nav-txt:hover{
-    font-size: 1.6rem;
+    font-size: 1.3rem;
 }
 /* like product */
 .like{

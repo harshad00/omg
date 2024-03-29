@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+      <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Orders</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+       {{!-- .proimg{
+        margin: 0px 4rem;
+       } --}}
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>User Orders</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Product</th>
+                <th>Product Name</th>
+                <th>Product Image</th>
+                <th>Product Price</th>
+                <th>You Contact Number</th>
+                <th>Order Date</th>
+                <th>User Address</th>
+                {{!-- <th>Payment ID</th>  --}}
+            </tr>
+        </thead>
+        <tbody id="orderTableBody">
+           {{#each userOrders}}
+                <tr>
+                 <!-- Username -->
+                    <td>{{this.order_id}}</td> <!-- Order ID -->
+                    <td>{{this.product._id}}</td> <!-- Product ID -->
+                    <td>   <img class="proimg" src="../../../images/uploads/{{this.product.images}}" alt="Product Image"
+                                        style="max-width: 50px; max-height: 50px; margin-right: 5px;">
+                                    </td> <!-- Product ID -->
+                    
+                    <td>{{this.product.productname}}</td> <!-- Product Name -->
+                    <td>{{this.product.price}}</td> <!-- Price -->
+                    <td>{{this.user.mobile}}</td> <!-- Phone No -->
+                    <td>{{this.createdAt}}</td> <!-- Phone No -->
+                    <td>{{this.userAddress.address.street}}, {{this.userAddress.address.city}},
+                        {{this.userAddress.address.state}}, {{this.userAddress.address.zipCode}}</td>
+                </tr>
+                {{/each}}
+        </tbody>
+    </table>
+
+
+</body>
+</html>
+
+</body>
+</html>

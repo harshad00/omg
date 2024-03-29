@@ -162,12 +162,13 @@
 
 .back-btn{
     text-decoration: none;
-    color: red;
+    background-color: red;
+    color: white;
     font-weight: 700;
     padding: 1rem;
     border-radius:10px  ;
     margin-left: 2rem;
-    box-shadow: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;;
+    box-shadow: rgba(202, 26, 6, 0.562) 3px 3px 6px 0px inset, rgba(183, 77, 68, 0.5) -3px -3px 6px 1px inset;;
 }
 .register-margin{
     margin-top: 4rem;

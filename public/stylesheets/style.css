@@ -9,6 +9,9 @@
   --primary-color: #faf7f2;
 
 }
+body{
+  background-color: oklch(93.77% 0.015 257.2);
+}
 
 /* default image style */
 img,
@@ -75,7 +78,7 @@ picture {
 .nav-text ul li a {
   text-decoration: none;
   color: black;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   transition: all .3s;
 }
 
@@ -386,11 +389,8 @@ picture {
 .about {
   width: 80%;
   display: flex;
-  border: 1px solid black;
   flex-direction: column;
   gap: 1rem;
-  background-color: #0093E9;
-  background-image: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
   padding: 1rem;
   margin: 1rem auto;
 
@@ -415,15 +415,22 @@ picture {
   /* font-weight: 600; */
   padding: 2rem;
   font-size: 1.4rem;
+  text-align: justify;
+  line-height: 2rem;
+ color: #051777;
 
 }
 
 .about-contact {
+  width: 30rem;
   display: flex;
   flex-direction: column;
   align-items: start;
-  gap: 1ren;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
+  padding: 0px  4rem;
+  text-align: justify;
+  gap: 1rem;
+ 
 }
 
 .about-adress {
@@ -612,4 +619,86 @@ picture {
   color: #ebdca5;
  }
 
+}
+
+/* contact section */
+.box {
+ width: 100%;
+ display: flex;
+ justify-content: center;
+ background-color: #141414;
+}
+.contact_section {
+  background-color: #141414;
+  color: #ffffff;
+  width: 60%;
+}
+
+.contact_section h2 {
+  font-weight: bold;
+  text-align: center;
+}
+
+.contact_section .heading_container {
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.contact_section .heading_container h2 {
+  color: #ffffff;
+}
+
+.contact_section .heading_container h2::before {
+  right: 50%;
+  -webkit-transform: translateX(50%);
+  transform: translateX(50%);
+}
+
+.contact_section .contact_form-container {
+  margin-top: 45px;
+}
+
+.contact_section .contact_form-container input {
+  border: none;
+  width: 90%;
+  outline: none;
+  border-bottom: 1px solid #ffffff;
+  color: #ffffff;
+ padding: 1rem;
+  margin: 15px 10px;
+  background-color: transparent;
+}
+
+.contact_section .contact_form-container input::-webkit-input-placeholder {
+  color: rgba(249, 252, 253, 0.5);
+}
+
+.contact_section .contact_form-container input:-ms-input-placeholder {
+  color: rgba(249, 252, 253, 0.5);
+}
+
+.contact_section .contact_form-container input::-ms-input-placeholder {
+  color: rgba(249, 252, 253, 0.5);
+}
+
+.contact_section .contact_form-container input::placeholder {
+  color: rgba(249, 252, 253, 0.5);
+}
+
+.contact_section .contact_form-container button {
+  border: 2px solid #ffffff;
+  padding: 8px 45px;
+  margin: 2rem auto;
+ 
+  border-radius: 30px;
+  background-color: transparent;
+  outline: none;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.contact_section .contact_form-container button:hover {
+  background-color: #ffffff;
+  color: #000000;
 }
