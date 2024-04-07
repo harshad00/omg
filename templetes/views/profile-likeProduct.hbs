@@ -12,6 +12,10 @@
             padding: 0px;
             box-sizing: border-box;
         }
+        h1{
+            text-align: center;
+            font-size: 2rem;
+        }
 
         img,
         picture {
@@ -69,6 +73,16 @@
             position: absolute;
             top: 150px;
         }
+        .pro-not{
+            width: 100%;
+            display: flex ;
+            justify-content: center;
+            align-items: center;
+
+        }
+        .pro-not p{
+            font-size: 2rem;
+        }
     </style>
 </head>
 
@@ -102,7 +116,9 @@
         {{/each}}
     </div>
     {{else}}
+    <div class="pro-not">
     <p>No liked products found.</p>
+    </div>
     {{/if}}
     {{else}}
     <p>User data not available.</p>

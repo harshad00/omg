@@ -49,7 +49,7 @@ router.post("/home/contact",  async function (req, res, next) {
      console.log(userReq);
     await userReq.save(); // Save the userReq instance to the database
 
-    res.render("home/contact" ,{ successMessage: "OMG team Connect You Soon" }); // Render the view after saving
+    res.render("home/contact" ,{ successMessage: " OMG team will Connect You Soon" }); // Render the view after saving
   } catch (error) {
     // Handle errors appropriately
     console.error("Error saving user request:", error);
@@ -365,6 +365,7 @@ router.get(
   async function (req, res, next) {
     try {
       const productId = req.params.productId;
+      
       // console.log(productId);
 
       // Assuming you have the user ID from the logged-in user
@@ -380,7 +381,7 @@ router.get(
       // Store data in the session
       req.session.userId = userId;
       req.session.productId = productId;
-      res.render("userAddress/", { userAddress });
+      res.render("userAddress", { userAddress });
     } catch (error) {
       console.error(error);
       res.status(500).send("Internal Server Error");
@@ -506,6 +507,8 @@ router.get("/address-storeosuccessfully", function (req, res) {
 // Handle adding user address
 router.post("/userAddress", isLoggedIn, async function (req, res) {
   try {
+    const productId = req.params.productId;
+    console.log(productId);
     const userId = await userModal.findOne({
       username: req.session.passport.user,
     });

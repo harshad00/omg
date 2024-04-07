@@ -23,7 +23,7 @@
 /* nav text  */
 .nav-text ul{
     display: flex;
-    gap: 1rem;
+    gap: 3rem;
     list-style: none;
     /* margin-right: 2rem; */
      text-align: end;

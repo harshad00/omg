@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <link rel="stylesheet" href="../../stylesheets/admin.css">
+    <style>
+         .search-container input[type=text],
+        .search-container select,
+        .search-container button {
+            margin-right: 10px;
+        }
+    </style>
 </head>
 
 <body>
@@ -28,7 +35,7 @@
             <option value="username">User Name</option>
             <option value="user_id">User ID</option>
             <option value="mobile">Mobile Number</option>
-            <option value="role">Role</option>
+            {{!-- <option value="role">Role</option> --}}
         </select>
 
         <button onclick="performSearch()">Search</button>

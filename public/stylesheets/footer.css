@@ -91,13 +91,16 @@
 }
 
 .social-icon{
-    width: 3rem;
+    width: 11rem;
     mix-blend-mode: color-burn;
-    display: flex;
+    /* display: flex; */
+    display: grid;
     align-items: center;
+    grid-template-columns: auto auto auto auto;
     justify-content: center;
     gap: 1rem;
 }
+
 
 /* footer-grid */
 .footer-grid{
@@ -131,6 +134,8 @@
     display: flex;
     justify-content: center;
     margin: 0px auto;
+    padding: 1rem;
+    font-size: 1.3rem;
    
 }
 @media only screen and (max-width: 575px) {
