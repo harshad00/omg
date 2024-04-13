@@ -1044,6 +1044,35 @@ function isLoggedInAdmin(req, res, next) {
   }
 }
 
+//! footer pages 
+
+ router.get("/footerPages/BLOG", function (req, res, next) {
+  res.render("footerPages/BLOG");
+});
+ router.get("/footerPages/CookiesSetting", function (req, res, next) {
+  res.render("footerPages/CookiesSetting");
+});
+ router.get("/footerPages/Documentaion", function (req, res, next) {
+  res.render("footerPages/Documentaion");
+});
+ router.get("/footerPages/FAQ", function (req, res, next) {
+  res.render("footerPages/FAQ");
+});
+ router.get("/footerPages/Investor", function (req, res, next) {
+  res.render("footerPages/Investor");
+});
+ router.get("/footerPages/JOB", function (req, res, next) {
+  res.render("footerPages/JOB");
+});
+ router.get("/footerPages/PrivacyPolicy", function (req, res, next) {
+  res.render("footerPages/PrivacyPolicy");
+});
+ router.get("/footerPages/TermsOfServices", function (req, res, next) {
+  res.render("footerPages/TermsOfServices");
+});
+
+
+
 // Helper function to extract variants from the request body
 function getVariantsFromRequest(body) {
   const variants = [];
