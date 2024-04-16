@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "dev": "nodemon src/app.js -e js,hbs"
+    "dev": "nodemon src/app.js -e js,hbs",
+    "build": "netlify deploy --prod"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
