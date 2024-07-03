@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>nav</title>
+  <link rel="stylesheet" href="../../stylesheets/nav.css">
+  <style>
+    .user_img {
+
+      width: 2.3rem;
+    }
+
+    .user_name {
+      text-align: center;
+      margin-top: 5px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <head>
+    <div class="navigation">
+      <div class="logo">
+        <img src="../../images/logo/OMG.png" alt="LOGO">
+      </div>
+      {{!-- <div class="search"><input class="search-bar" type="search" name="" placeholder="Search..." id=""> <samp
+          class="Search_btn"> <img class="search-icon" src="../../images/icon/search-icon.png" alt="search icon"></samp>
+      </div> --}}
+      <nav class="nav-text">
+        <ul>
+          <li><a class="nav-txt" href="#">Home</a></li>
+          <li><a class="nav-txt" href="#">About</a></li>
+         <a href="http://localhost:3000/userprofile"> <img src="../../images/addmin/user.png" alt="User Image" class="user_img"></a>
+          <p class="user_name"> {{ loggedInUsername }}</p>
+        </ul>
+      </nav>
+      <div class="like">
+        <a href="http://localhost:3000/profile-likeProduct">
+          <samp class="like-icon">
+            <img class="heart-icon" src="../../images/icon/heart-icon.png" alt="heart icon">
+          </samp>
+        </a>
+        {{!-- <div id="like-count" class="count-like"></div> --}}
+      </div>
+    </div>
+  </head>
+</body>
+<script>
+  
+
+</script>
+
+</html>

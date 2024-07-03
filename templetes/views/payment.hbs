@@ -1,0 +1,85 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<form id="payment-form" action="/payment/{{userAddressId}}" method="post">
+    <div>
+        <label for="card-element">
+            Credit or debit card
+        </label>
+        <div id="card-element">
+            <!-- A Stripe Element will be inserted here. -->
+        </div>
+
+        <!-- Used to display form errors. -->
+        <div id="card-errors" role="alert"></div>
+    </div>
+
+    <button type="submit" id="submit-button">Submit Payment</button>
+</form>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    var stripe = Stripe('pk_test_51OuYzOSBd0rVtqIWVBEk3D8PHz7b9KRwI7A3gpxDeOGIa6qNeZLE54Qf4u8JbMBloThj5hQtzQPbg7YFV4eTcFDc00UqwdLl9s');
+    var elements = stripe.elements();
+
+    var card = elements.create('card');
+
+    card.mount('#card-element');
+
+    var form = document.getElementById('payment-form');
+    var submitButton = document.getElementById('submit-button');
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        submitButton.disabled = true;
+
+        stripe.createPaymentMethod({
+            type: 'card',
+            card: card
+        }).then(function(result) {
+            if (result.error) {
+                var errorElement = document.getElementById('card-errors');
+                errorElement.textContent = result.error.message;
+                submitButton.disabled = false;
+            } else {
+                var paymentMethodId = result.paymentMethod.id;
+                fetch('/process-payment', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ payment_method_id: paymentMethodId })
+                }).then(function(result) {
+                    return result.json();
+                }).then(function(response) {
+                    if (response.success) {
+                        alert("Payment successful!");
+                       
+                      
+                    } else {
+                        alert("Payment failed: " + response.error);
+                        submitButton.disabled = false;
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+
+
+
+    
+</body>
+</html>
+
+

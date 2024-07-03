@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Card</title>
+    <link rel="stylesheet" href="../../../stylesheets/cart-data.css">
+        
+</head>
+
+<body>
+    {{> nav}}
+      <div class="hero"><h1> Opticals </h1> </div>
+    <div id="dynamicCards" class="img"></div>
+
+    <script>
+        // Sample data
+        const cardData = [
+
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical1.jpg",
+                imgAlt: "Optical 1",
+                title: "Rectangular Prescription Glasses",
+                price: "₹3699",
+                text: "Stylish rectangular prescription glasses for clear vision and a fashionable look.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical2.jpg",
+                imgAlt: "Optical 2",
+                title: "Fashionable Blue Light Blocking Glasses",
+                price: "₹2499",
+                text: "Protect your eyes from digital strain with these trendy blue light blocking glasses.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical3.jpg",
+                imgAlt: "Optical 3",
+                title: "Retro Round Reading Glasses",
+                price: "₹1999",
+                text: "Classic round reading glasses with a retro vibe. Perfect for book lovers.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical4.jpg",
+                imgAlt: "Optical 4",
+                title: "Titanium Frame Eyeglasses",
+                price: "₹4499",
+                text: "Lightweight and durable titanium frame eyeglasses for a comfortable fit.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical5.jpg",
+                imgAlt: "Optical 5",
+                title: "Oversized Cat Eye Glasses",
+                price: "₹2999",
+                text: "Make a statement with these oversized cat eye glasses. Stylish and chic.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical6.jpg",
+                imgAlt: "Optical 6",
+                title: "Wireframe Aviator Glasses",
+                price: "₹3699",
+                text: "Aviator-style glasses with a modern twist. Wireframe design for a sleek look.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical7.jpg",
+                imgAlt: "Optical 7",
+                title: "Geometric Shape Spectacles",
+                price: "₹2899",
+                text: "Experiment with fashion with these geometric shape spectacles. Unique and trendy.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical8.jpg",
+                imgAlt: "Optical 8",
+                title: "Wooden Frame Glasses",
+                price: "₹3999",
+                text: "Environmentally friendly wooden frame glasses for a natural and stylish look.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical9.jpg",
+                imgAlt: "Optical 9",
+                title: "Square Frame Progressive Lenses",
+                price: "₹4799",
+                text: "Square frame glasses with progressive lenses for a seamless transition between distances.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical10.jpg",
+                imgAlt: "Optical 10",
+                title: "Crystal Clear Rimless Glasses",
+                price: "₹3299",
+                text: "Minimalistic rimless glasses with crystal clear lenses. Lightweight and sophisticated.",
+            },
+        ];
+
+
+        // Function to create dynamic cards
+        function createCards() {
+            const dynamicCards = document.getElementById("dynamicCards");
+
+            cardData.forEach((data) => {
+                const mainDiv = document.createElement("div");
+                mainDiv.className = "main";
+
+                const imgElement = document.createElement("img");
+                imgElement.src = data.imageSrc;
+                imgElement.alt = data.imgAlt;
+                imgElement.className = "img-e";
+
+                const contentDiv = document.createElement("div");
+                contentDiv.className = "contant";
+
+                const heading = document.createElement("h1");
+                heading.textContent = data.title;
+
+                const priceParagraph = document.createElement("p");
+                priceParagraph.classList.add("Price")
+                priceParagraph.textContent = data.price;
+
+                const textParagraph = document.createElement("p");
+                textParagraph.className = "txt";
+                textParagraph.textContent = data.text;
+
+                const buyButton = document.createElement("a");
+                buyButton.className = "btn-primary";
+                buyButton.href = "../login";  // You can set the actual link here
+                buyButton.textContent = "Buy";
+
+                const addlikeButton = document.createElement("a");
+                addlikeButton.className = "btn-primary";
+                addlikeButton.href = "../login";  // You can set the actual link here
+                addlikeButton.textContent = "Add Like";
+
+                contentDiv.appendChild(heading);
+                contentDiv.appendChild(priceParagraph);
+                contentDiv.appendChild(textParagraph);
+                contentDiv.appendChild(buyButton);
+                contentDiv.appendChild(addlikeButton);
+
+                // Add click event listener to Buy button
+                buyButton.addEventListener("click", (event) => {
+                    event.preventDefault();  // Prevent the default behavior of the anchor tag
+                    if (!isUserLoggedIn()) {
+                        const confirmation = confirm("You are not logged in. Do you want to go to the login page?");
+                        if (confirmation) {
+                            window.location.href = "../login";
+                        }
+                        // If the user clicks "Cancel", do nothing (stay on the current page)
+                    } else {
+                        // User is logged in, perform the default action
+                        window.location.href = buyButton.href;
+                    }
+                });
+
+                // Add click event listener to Add Like button
+                addlikeButton.addEventListener("click", (event) => {
+                    event.preventDefault();  // Prevent the default behavior of the anchor tag
+                    if (!isUserLoggedIn()) {
+                        const confirmation = confirm("You are not logged in. Do you want to go to the login page?");
+                        if (confirmation) {
+                            window.location.href = "../login";
+                        }
+                        // If the user clicks "Cancel", do nothing (stay on the current page)
+                    } else {
+                        // User is logged in, perform the default action
+                        window.location.href = addlikeButton.href;
+                    }
+                });
+
+                mainDiv.appendChild(imgElement);
+                mainDiv.appendChild(contentDiv);
+
+                dynamicCards.appendChild(mainDiv);
+            });
+        }
+
+        // Function to check if the user is logged in (replace with your actual authentication logic)
+        function isUserLoggedIn() {
+            // Replace this with your actual authentication logic (e.g., checking a session or token)
+            // For demonstration purposes, always return false (not logged in)
+            return false;
+        }
+
+        // Call the function to create the dynamic cards
+        createCards();
+    </script>
+</body>
+
+</html>

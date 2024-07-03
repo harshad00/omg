@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Card</title>
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+
+        img,
+        picture {
+            max-width: 100%;
+            display: block;
+        }
+
+        .img {
+            max-width: 60rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+            gap: 0.4rem;
+            margin: 10px auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.1rem;
+        }
+
+        .Price {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .main {
+            box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+            border-radius: .3rem;
+        }
+
+        .img-e {
+            aspect-ratio: 1/1;
+            object-fit: fill;
+            border-radius: 0.3rem;
+        }
+
+        .Button {
+            text-decoration: none;
+            color: #fff;
+            background-color: dodgerblue;
+            padding: 0.5rem 1rem;
+            display: inline-block;
+            margin-top: 10px;
+            border-radius: 0.3rem;
+            transition: background-color 0.3s;
+            margin: 1rem;
+        }
+
+        .Button:hover {
+            background-color: royalblue;
+        }
+    </style>
+</head>
+
+<body>
+     {{> profileNav}}<!-- Assuming you have a navigation partial, replace with your own navigation code -->
+
+    <div id="dynamicCards" class="img">
+        {{#each allProducts}}
+        <div class="main">
+      
+            <img src="../../../images/uploads/{{images}}" alt="{{productName}}" class="img-e">
+            <div class="contant">
+                <h1>{{productname}}</h1>
+                <p class="Price">{{price}}</p>
+                <!-- Add other fields as needed -->
+                <a href="/userAddress/{{_id}}" class="Button">Buy</a>
+                <a href="/likeProduct/{{_id}}"   class="Button">Add Like</a>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+
+   
+
+</body>
+
+<script>
+    
+        
+</script>
+
+</html>

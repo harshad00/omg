@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../stylesheets/admin.css">
+   
+</head>
+
+<body>
+    <header>
+        <h1> order - details</h1>
+    </header>
+    <nav>
+        <a href="../admin">Home</a>
+        <a href="user-data">User Data</a>
+        <a href="product-data">Product Data</a>
+        <a href="addproduct">Add Product</a>
+        <a href="order-details">Order Details</a>
+         <a href="userRequert">Uer Question</a>
+        {{!-- <a href="user-data">User Data</a> --}}
+    </nav>
+
+    <main>
+        <div id="page-data">
+            <h2>Order Details Page</h2>
+             <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search...">
+                <select id="filterBy">
+                    <option value="username">User Name</option>
+                    <option value="order_id">Order ID</option>
+                    <option value="product._id">Product ID</option>
+                </select>
+                <button onclick="performSearch()">Search</button>
+            </div>
+            <div class="box1">
+            <table>
+                <tr>
+                    <th>Username</th>
+                    <th>Order ID</th>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Phone No</th>
+                    <th>Address</th>
+                    <th>Payment Id</th>
+                    <th>Date of Order</th>
+                    {{!-- <th>Action</th> --}}
+                </tr>
+                {{#each userOrderdata}}
+                <tr>
+                    <td>{{this.user.username}}</td> <!-- Username -->
+                    <td>{{this.order_id}}</td> <!-- Order ID -->
+                    <td>{{this.product._id}}</td> <!-- Product ID -->
+                    <td>{{this.product.productname}}</td> <!-- Product Name -->
+                    <td>{{this.product.price}}</td> <!-- Price -->
+                    <td>{{this.user.mobile}}</td> <!-- Phone No -->
+                    <td>{{this.userAddress.address.street}}, {{this.userAddress.address.city}},
+                        {{this.userAddress.address.state}}, {{this.userAddress.address.zipCode}}</td> <!-- Address -->
+                    {{!-- <td>{{formatDate this.createdAt}}</td> <!-- Date of Order --> --}}
+                    <td><a href="#" class="cancel-btn">{{this.payment_id}}</a></td> <!-- Cancel Button -->
+                    <td>{{this.createdAt}}</td> <!-- Cancel Button -->
+                </tr>
+                {{/each}}
+            </table>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Function to filter table rows based on input values
+        function performSearch() {
+            var searchInput = document.getElementById("searchInput").value.toUpperCase();
+            var filterBy = document.getElementById("filterBy").value;
+            var rows = document.querySelector(".box table").getElementsByTagName("tr");
+
+            for (var i = 1; i < rows.length; i++) {
+                var columnValue = rows[i].getElementsByTagName("td")[getIndexOfColumn(filterBy)].innerText.toUpperCase();
+
+                // Check if the column value matches the search input
+                if (columnValue.indexOf(searchInput) > -1) {
+                    rows[i].style.display = "";
+                } else {
+                    rows[i].style.display = "none";
+                }
+            }
+        }
+
+        // Function to get the index of the selected column
+        function getIndexOfColumn(columnName) {
+            switch (columnName) {
+                case 'username':
+                    return 0;
+                case 'order_id':
+                    return 1;
+                case 'product._id':
+                    return 2;
+                default:
+                    return 0; // Default to Username column
+            }
+        }
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,111 @@
+
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+  }
+ body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  form {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  label {
+    display: block;
+    margin-top: 10px;
+  }
+  
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+  }
+  
+  .submit_btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .submit_btn:hover {
+    background-color: #45a049;
+  }
+  
+  #discountsContainer,
+  #variantsContainer {
+    margin-top: 20px;
+  }
+  
+  .discount,
+  .variant {
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  
+  #addDiscount,
+  #addVariant {
+    background-color: #008CBA;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  #addDiscount:hover,
+  #addVariant:hover {
+    background-color: #00608E;
+}
+  
+  
+/* Style for the gender checkboxes */
+#genderContainer {
+  margin-top: 10px;
+}
+
+#genderContainer label {
+  margin-right: 10px;
+}
+
+#genderContainer input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+
+.gender_dev{
+  display: flex;
+  /* flex-direction: column; */
+  gap:10px ;
+}
+.gender_dev samp{
+  align-items: center;
+  font-size: 1rem;
+ margin-top: 7px;
+
+}
+.category-options{
+
+  display: flex;
+  padding: 2rem;
+  gap: 5px;
+}
+
+.radio-btn{
+
+  margin-top:
+  12px ;
+  
+}

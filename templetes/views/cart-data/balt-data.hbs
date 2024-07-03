@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Card</title>
+    <link rel="stylesheet" href="../../../stylesheets/cart-data.css">
+   
+</head>
+
+<body>
+    {{> nav}}  
+     <div class="hero"><h1> Male  Belts </h1> </div>
+    <div id="dynamicCards" class="img"></div>
+
+    <script>
+    const cardData = [
+    {
+        imageSrc: "../../../images/cart-data/belts/balt1.jpg",
+        imgAlt: "Belt 1",
+        title: "Classic Leather Belt",
+        price: "₹1599",
+        text: "Timeless classic leather belt that complements any outfit. A must-have for every wardrobe.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt2.jpg",
+        imgAlt: "Belt 2",
+        title: "Canvas Web Belt",
+        price: "₹1299",
+        text: "Casual canvas web belt with a durable buckle. Perfect for a laid-back and comfortable style.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt3.jpg",
+        imgAlt: "Belt 3",
+        title: "Studded Leather Belt",
+        price: "₹1899",
+        text: "Edgy studded leather belt for a bold and fashionable look. Add a touch of personality to your attire.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt4.jpg",
+        imgAlt: "Belt 4",
+        title: "Slim Dress Belt",
+        price: "₹1799",
+        text: "Slim and sleek dress belt for a polished and refined appearance. Ideal for formal occasions.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt5.jpg",
+        imgAlt: "Belt 5",
+        title: "Braided Leather Belt",
+        price: "₹2199",
+        text: "Elegant braided leather belt that adds texture and style to your outfit. A versatile accessory for any occasion.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt6.jpg",
+        imgAlt: "Belt 6",
+        title: "Casual Elastic Belt",
+        price: "₹999",
+        text: "Comfortable and stretchable elastic belt for a relaxed and casual look. Perfect for everyday wear.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt7.jpg",
+        imgAlt: "Belt 7",
+        title: "Embossed Pattern Belt",
+        price: "₹1699",
+        text: "Chic embossed pattern belt that adds a touch of sophistication to your ensemble. Make a statement with your style.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt8.jpg",
+        imgAlt: "Belt 8",
+        title: "Double Ring Belt",
+        price: "₹1499",
+        text: "Trendy double ring belt with a unique buckle design. Elevate your fashion game with this stylish accessory.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt9.jpg",
+        imgAlt: "Belt 9",
+        title: "Western Style Belt",
+        price: "₹1999",
+        text: "Western-inspired belt with decorative details. Add a touch of the wild west to your wardrobe.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt10.jpg",
+        imgAlt: "Belt 10",
+        title: "Reversible Belt",
+        price: "₹2399",
+        text: "Versatile reversible belt with different colors on each side. Get two looks in one with this practical accessory.",
+    },
+];
+        // Function to create dynamic cards
+        function createCards() {
+            const dynamicCards = document.getElementById("dynamicCards");
+
+            cardData.forEach((data) => {
+                const mainDiv = document.createElement("div");
+                mainDiv.className = "main";
+
+                const imgElement = document.createElement("img");
+                imgElement.src = data.imageSrc;
+                imgElement.alt = data.imgAlt;
+                imgElement.className = "img-e";
+
+                const contentDiv = document.createElement("div");
+                contentDiv.className = "contant";
+
+                const heading = document.createElement("h1");
+                heading.textContent = data.title;
+
+                const priceParagraph = document.createElement("p");
+                priceParagraph.classList.add("Price")
+                priceParagraph.textContent = data.price;
+
+                const textParagraph = document.createElement("p");
+                textParagraph.className = "txt";
+                textParagraph.textContent = data.text;
+
+                const buyButton = document.createElement("a");
+                buyButton.className = "btn-primary";
+                buyButton.href = "../login";  // You can set the actual link here
+                buyButton.textContent = "Buy";
+
+                const addlikeButton = document.createElement("a");
+                addlikeButton.className = "btn-primary";
+                addlikeButton.href = "../login";  // You can set the actual link here
+                addlikeButton.textContent = "Add Like";
+
+                contentDiv.appendChild(heading);
+                contentDiv.appendChild(priceParagraph);
+                contentDiv.appendChild(textParagraph);
+                contentDiv.appendChild(buyButton);
+                contentDiv.appendChild(addlikeButton);
+
+                // Add click event listener to Buy button
+                buyButton.addEventListener("click", (event) => {
+                    event.preventDefault();  // Prevent the default behavior of the anchor tag
+                    if (!isUserLoggedIn()) {
+                        const confirmation = confirm("You are not logged in. Do you want to go to the login page?");
+                        if (confirmation) {
+                            window.location.href = "../login";
+                        }
+                        // If the user clicks "Cancel", do nothing (stay on the current page)
+                    } else {
+                        // User is logged in, perform the default action
+                        window.location.href = buyButton.href;
+                    }
+                });
+
+                // Add click event listener to Add Like button
+                addlikeButton.addEventListener("click", (event) => {
+                    event.preventDefault();  // Prevent the default behavior of the anchor tag
+                    if (!isUserLoggedIn()) {
+                        const confirmation = confirm("You are not logged in. Do you want to go to the login page?");
+                        if (confirmation) {
+                            window.location.href = "../login";
+                        }
+                        // If the user clicks "Cancel", do nothing (stay on the current page)
+                    } else {
+                        // User is logged in, perform the default action
+                        window.location.href = addlikeButton.href;
+                    }
+                });
+
+                mainDiv.appendChild(imgElement);
+                mainDiv.appendChild(contentDiv);
+
+                dynamicCards.appendChild(mainDiv);
+            });
+        }
+
+        // Function to check if the user is logged in (replace with your actual authentication logic)
+        function isUserLoggedIn() {
+            return false;
+        }
+       // Call the function to create the dynamic cards
+        createCards();
+    </script>
+</body>
+
+</html>

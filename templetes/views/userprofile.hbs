@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .main {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0rem;
+            flex-direction: column;
+            align-items: center;
+
+
+        }
+
+        .myproject {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 1rem;
+
+        }
+
+        .text {
+            border-bottom: 2px solid black;
+
+        }
+
+
+        .userProfile {
+            width: 30rem;
+            border: 2px solid black;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+
+        }
+
+        .userProfile>img {
+            width: 20rem;
+
+        }
+
+        .logout {
+            height: 4rem;
+            width: 100%;
+            display: flex;
+            justify-content: end;
+            margin: 0px 2rem;
+        }
+
+        .logout-bin {
+
+            width: 4rem;
+            height: 1.5rem;
+            background: red;
+            color: white;
+            margin: 0px 1rem;
+            font-size: 1.1rem;
+            text-decoration: none;
+            text-align: center;
+            border-radius: 3px;
+
+        }
+
+        .home {
+            width: 4rem;
+            height: 1.5rem;
+            background: blue;
+            color: white;
+            font-size: 1.1rem;
+            text-decoration: none;
+            text-align: center;
+            margin: 0px 1rem;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div class="myprofile">
+            <h1 class="text"> My Profile</h1>
+        </div>
+
+        <div class="logout">
+            <a class=" logout-bin" href="logout"> Logout</a>
+            <a class=" home" href="profile"> Home</a>
+        </div>
+        <div class="userProfile">
+
+            <img src="../../images/addmin/user.png " alt="user_img">
+            <label for="Name:"> Name: </label>
+            <h4>{{userprofile.username}}</h4>
+            <label for="Mobile:"> Mobile No: </label>
+            <h4>{{userprofile.mobile}}</h4> 
+            <a href="userOrserDetail">  <h4>Your Order Details</h4> </a>
+        </div>
+
+
+
+
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balts</title> 
+    <link rel="stylesheet" href="../../../stylesheets/profile-cart.css">
+</head>
+
+<body>
+    {{> profileNav}}
+    <div id="dynamicCards" class="img">
+        {{#each product_data}}
+        <div class="main">
+            <img src="../../../images/uploads/{{images}}" alt="{{imgAlt}}" class="img-e">
+            <div class="contant">
+                <h1>{{productname}}</h1>
+                <p class="Price">{{price}}</p>
+                <a href="/userAddress/{{_id}}" class="Button">Buy</a>
+                <a href="/likeProduct/{{_id}}" class="Button">Add Like</a>
+            </div>
+        </div>
+        {{/each}}
+    </div>
+</body>
+
+</html>

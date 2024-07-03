@@ -1,0 +1,49 @@
+<div class="footer-grid">
+
+                <!-- Column 1  -->
+                <div class="footer-grid-column">
+                    <h4 class="heading-footer">Products</h4> 
+                        <div class="footer-text">
+                          <a href="#Spectacals" class="footer-link">Spectacals</a>
+                          <a href="#Watches" class="footer-link">Watches</a>
+                          <a href="#Belt" class="footer-link">Belt</a>
+                          <a href="#Wallets" class="footer-link">Wallets</a>
+                        </div>
+                </div>
+
+                <!-- column 2-->
+                <div class="footer-grid-column">
+                    <h4 class="heading-footer"> Company</h4> 
+                    <div class="footer-text">
+                        <a href="#Spectacals" class="footer-link">About</a>
+                        <a href="#Watches" class="footer-link">Investor</a>
+                        <a href="#Belt" class="footer-link">Jobs</a>
+                        <a href="#Wallets" class="footer-link">Blog</a>
+                      </div>
+                       
+                </div>
+
+                <!-- column 3-->
+                <div class="footer-grid-column">
+                    <h4 class="heading-footer">Support</h4>
+                    <div class="footer-text">
+                        <a href="#Spectacals" class="footer-link">Contact</a>
+                        <a href="#Watches" class="footer-link">Documentation</a>
+                        <a href="#Belt" class="footer-link">Chat</a>
+                        <a href="#Wallets" class="footer-link">FAQ</a>
+                      </div>
+                    
+                </div>
+
+                <!--column 4-->
+                <div class="footer-grid-column">
+                    <h4 class="heading-footer">Legal</h4>
+
+                    <div class="footer-text">
+                        <a href="#Spectacals" class="footer-link">Terms of Service</a>
+                        <a href="#Watches" class="footer-link">Privacy Policy</a>
+                        <a href="#Belt" class="footer-link">Cookie Settings</a>
+                      </div>
+            
+                </div>
+            </div>

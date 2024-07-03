@@ -1,0 +1,92 @@
+<!-- Inside edit-product.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product</title>
+    <link rel="stylesheet" href="../../stylesheets/product.css">
+    <link rel="stylesheet" href="../../stylesheets/admin.css">
+    <!-- Add your head content here -->
+</head>
+
+<body>
+    <h1>Edit Product</h1>
+    <form action="/admin-datas/edit-product/{{product._id}}" method="post">
+        <!-- Include form fields for editing product data -->
+        <label for="productName">Product Name:</label>
+        <input type="text" id="productName" name="productName" value="{{product.productname}}" required>
+
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" required>{{product.description}}</textarea>
+
+        <label for="category">Category:</label>
+        <input type="text" id="category" name="category" value="{{product.category}}" required>
+
+        <label for="price">Price:</label>
+        <input type="number" id="price" name="price" value="{{product.price}}" required>
+
+        <label for="stockQuantity">Stock Quantity:</label>
+        <input type="number" id="stockQuantity" name="stockQuantity" value="{{product.stockQuantity}}" required>
+
+        <label for="gender">Gender:</label>
+        <input type="text" id="gender" name="gender" value="{{product.gender}}" required>
+
+
+        {{!-- <!-- Handling images -->
+        <label for="images">Images:</label>
+        <input type="file" id="images" name="images" multiple required>
+
+        {{#each product.images}}
+        <img src="../../../images/uploads/{{this}}" alt="Product Image"
+            style="max-width: 50px; max-height: 50px; margin-right: 5px;">
+        {{/each}} --}}
+
+        <label for="availability">Availability:</label>
+        <input type="checkbox" id="availability" name="availability" {{#if product.availability}}checked{{/if}}>
+
+        <label for="manufacturer">Manufacturer:</label>
+        <input type="text" id="manufacturer" name="manufacturer" value="{{product.manufacturer}}" required>
+
+        <!-- Handling variants -->
+      <div id="variants-container">
+  {{#each product.variants}}
+    <div class="variant">
+    <label for="variantSize">Variant Sizes:</label>
+<textarea id="variantSize" name="variantSize" rows="4" required>{{#each this.size}}{{this}}\n{{/each}}</textarea>
+
+      <label for="variantColor">Variant Color:</label>
+      <input type="text" name="variantColor" value="{{this.color}}" required>
+
+      <label for="variantPrice">Variant Price:</label>
+      <input type="number" name="variantPrice" value="{{this.price}}" required>
+
+      <label for="variantStockQuantity">Variant Stock Quantity:</label>
+      <input type="number" name="variantStockQuantity" value="{{this.stockQuantity}}" required>
+
+      <label for="variantAvailability">Variant Availability:</label>
+      <input type="checkbox" name="variantAvailability" {{#if this.availability}}checked{{/if}}>
+    </div>
+  {{/each}}
+</div>
+
+{{!-- <button type="button" onclick="addVariant()">Add Variant</button> --}}
+
+        <button type="submit">Update Product</button>
+    </form>
+</body>
+<script>
+  function addVariantSizeInput() {
+    const container = document.querySelector('.variantSizesContainer');
+    const newInput = document.createElement('input');
+    newInput.type = 'text';
+    newInput.className = 'variantSize';
+    newInput.name = 'variantSize[]';
+    newInput.placeholder = 'Enter Size';
+    container.appendChild(newInput);
+  }
+</script>
+
+
+</html>

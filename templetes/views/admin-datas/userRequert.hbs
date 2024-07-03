@@ -1,0 +1,83 @@
+<!-- home/requests.hbs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Requests</title>
+      <link rel="stylesheet" href="../../stylesheets/admin.css">
+      <style>
+        /* Style the table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+/* Style table headers */
+th {
+  background-color: #f2f2f2;
+  text-align: left;
+  padding: 8px;
+}
+
+/* Style table cells */
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+/* Alternate row background color */
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+/* Hover effect */
+tr:hover {
+  background-color: #ddd;
+}
+
+ h1 {
+  text-align: center;
+  width: 100%;
+ }
+      </style>
+</head>
+<body>
+     <header>
+        <h1> Admin Page</h1>
+    </header>
+    <nav>
+
+        <a href="../admin">Home</a>
+        <a href="user-data">User Data</a>
+        <a href="product-data">Product Data</a>
+        <a href="addproduct">Add Product</a>
+        <a href="order-details">Order Details</a>
+        <a href="#">Uer Question</a>
+        {{!-- <a class="logout" href="/logout">Logout</a> --}}
+    </nav>
+
+  <h1>User Requests</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Phone Number</th>
+        <th>Email</th>
+        <th>Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each userRequests}}
+      <tr>
+        <td>{{req_name}}</td>
+        <td>{{req_number}}</td>
+        <td>{{email}}</td>
+        <td>{{user_msg}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</body>
+</html>

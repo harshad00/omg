@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Showcase</title>
+    {{!-- <link rel="stylesheet" href="style.css"> --}}
+    <style>
+        * {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+img,
+picture {
+    max-width: 100%;
+    display: block;
+}
+
+.img {
+    max-width: 60rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 1rem;
+    margin: 10px auto;
+}
+
+.main {
+    border: 2px solid springgreen;
+    border-radius: .3rem;
+}
+
+.img-e {
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    padding: .34rem;
+    align-items: center;
+}
+.card-img{
+    width: 20rem;
+    max-height: 15rem;
+}
+
+    </style>
+</head>
+<body>
+    <div class="img">
+        {{#each products}}
+            <div class="main">
+                <img class="card-img" src="../../images/uploads/{{images.[0]}}" alt="{{description}}" class="img-e">
+                <div class="contant">
+                    <h1>{{productname}}</h1>
+                    <p>${{price}}</p>
+                    <p class="txt">{{description}}</p>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</body>
+</html>

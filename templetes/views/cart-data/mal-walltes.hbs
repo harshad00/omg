@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Card</title>
+    <link rel="stylesheet" href="../../../stylesheets/cart-data.css">
+    
+</head>
+
+<body>
+    {{> nav}}
+     <div class="hero"><h1> Male  Wallets </h1> </div>
+    <div id="dynamicCards" class="img"></div>
+
+    <script>
+        // Sample data
+      const cardData = [
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl1.jpg",
+                imgAlt: "Wallet 1",
+                title: "Slim Leather Wallet",
+                price: "₹2999",
+                text: "Slim and stylish leather wallet with multiple card slots. Ideal for minimalist enthusiasts.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl2.jpg",
+                imgAlt: "Wallet 2",
+                title: "Bifold Wallet with Coin Pocket",
+                price: "₹3499",
+                text: "Classic bifold wallet with a coin pocket. Organize your essentials with ease.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl3.jpg",
+                imgAlt: "Wallet 3",
+                title: "Retro Leather Money Clip",
+                price: "₹2599",
+                text: "Retro-style money clip made of genuine leather. Keep your bills secure and stylish.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl4.jpg",
+                imgAlt: "Wallet 4",
+                title: "Trifold RFID Blocking Wallet",
+                price: "₹3899",
+                text: "Trifold wallet with RFID blocking technology. Protect your cards from unauthorized scanning.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl5.jpg",
+                imgAlt: "Wallet 5",
+                title: "Zip-Around Travel Wallet",
+                price: "₹4499",
+                text: "Spacious zip-around wallet for travelers. Securely store your cards, cash, and passport.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl6.jpg",
+                imgAlt: "Wallet 6",
+                title: "Modern Leather Card Holder",
+                price: "₹1999",
+                text: "Sleek leather card holder for those who prefer a minimalist approach. Carry your essential cards in style.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl7.jpg",
+                imgAlt: "Wallet 7",
+                title: "Canvas Bifold Wallet",
+                price: "₹1799",
+                text: "Casual canvas bifold wallet with ample card slots and a clear ID window. Perfect for everyday use.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl8.jpg",
+                imgAlt: "Wallet 8",
+                title: "Slim Front Pocket Wallet",
+                price: "₹2199",
+                text: "Ultra-slim front pocket wallet for a discreet and comfortable carry. Fits seamlessly in your front pocket.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl9.jpg",
+                imgAlt: "Wallet 9",
+                title: "Leather Passport Holder",
+                price: "₹2799",
+                text: "Stylish leather passport holder with card slots and space for travel essentials. Travel with ease and sophistication.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl10.jpg",
+                imgAlt: "Wallet 10",
+                title: "Designer Bifold Wallet",
+                price: "₹4999",
+                text: "High-end designer bifold wallet made from premium materials. Elevate your style with this luxurious accessory.",
+            },
+           
+        ];
+
+
+
+
+        // Function to create dynamic cards
+        function createCards() {
+            const dynamicCards = document.getElementById("dynamicCards");
+
+            cardData.forEach((data) => {
+                const mainDiv = document.createElement("div");
+                mainDiv.className = "main";
+
+                const imgElement = document.createElement("img");
+                imgElement.src = data.imageSrc;
+                imgElement.alt = data.imgAlt;
+                imgElement.className = "img-e";
+
+                const contentDiv = document.createElement("div");
+                contentDiv.className = "contant";
+
+                const heading = document.createElement("h1");
+                heading.textContent = data.title;
+
+                const priceParagraph = document.createElement("p");
+                priceParagraph.classList.add("Price")
+                priceParagraph.textContent = data.price;
+
+                const textParagraph = document.createElement("p");
+                textParagraph.className = "txt";
+                textParagraph.textContent = data.text;
+
+                const buyButton = document.createElement("a");
+                buyButton.className = "btn-primary";
+                buyButton.href = "../login";  // You can set the actual link here
+                buyButton.textContent = "Buy";
+
+                const addlikeButton = document.createElement("a");
+                addlikeButton.className = "btn-primary";
+                addlikeButton.href = "../login";  // You can set the actual link here
+                addlikeButton.textContent = "Add Like";
+
+                contentDiv.appendChild(heading);
+                contentDiv.appendChild(priceParagraph);
+                contentDiv.appendChild(textParagraph);
+                contentDiv.appendChild(buyButton);
+                contentDiv.appendChild(addlikeButton);
+
+                // Add click event listener to Buy button
+                buyButton.addEventListener("click", (event) => {
+                    event.preventDefault();  // Prevent the default behavior of the anchor tag
+                    if (!isUserLoggedIn()) {
+                        const confirmation = confirm("You are not logged in. Do you want to go to the login page?");
+                        if (confirmation) {
+                            window.location.href = "../login";
+                        }
+                        // If the user clicks "Cancel", do nothing (stay on the current page)
+                    } else {
+                        // User is logged in, perform the default action
+                        window.location.href = buyButton.href;
+                    }
+                });
+
+                // Add click event listener to Add Like button
+                addlikeButton.addEventListener("click", (event) => {
+                    event.preventDefault();  // Prevent the default behavior of the anchor tag
+                    if (!isUserLoggedIn()) {
+                        const confirmation = confirm("You are not logged in. Do you want to go to the login page?");
+                        if (confirmation) {
+                            window.location.href = "../login";
+                        }
+                        // If the user clicks "Cancel", do nothing (stay on the current page)
+                    } else {
+                        // User is logged in, perform the default action
+                        window.location.href = addlikeButton.href;
+                    }
+                });
+
+                mainDiv.appendChild(imgElement);
+                mainDiv.appendChild(contentDiv);
+
+                dynamicCards.appendChild(mainDiv);
+            });
+        }
+
+        // Function to check if the user is logged in (replace with your actual authentication logic)
+        function isUserLoggedIn() {
+            // Replace this with your actual authentication logic (e.g., checking a session or token)
+            // For demonstration purposes, always return false (not logged in)
+            return false;
+        }
+
+        // Call the function to create the dynamic cards
+        createCards();
+    </script>
+</body>
+
+</html>

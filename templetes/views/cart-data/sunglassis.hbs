@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Card</title>
+    <link rel="stylesheet" href="../../../stylesheets/cart-data.css">
+
+</head>
+
+<body>
+    {{> nav}}
+            <div class="hero"><h1> Sunglass </h1> </div>
+    <div id="dynamicCards" class="img"></div>
+
+    <script>
+        // Sample data
+       const cardData = [
+
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg1.jpg",
+                imgAlt: "Sunglass 1",
+                title: "Aviator Sunglasses",
+                price: "₹2499",
+                text: "Iconic aviator sunglasses with UV protection. Stylish and functional for sunny days.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg2.jpg",
+                imgAlt: "Sunglass 2",
+                title: "Vintage Round Sunglasses",
+                price: "₹1999",
+                text: "Round sunglasses with a vintage touch. Trendy and perfect for a retro look.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg3.jpg",
+                imgAlt: "Sunglass 3",
+                title: "Polarized Wayfarer Shades",
+                price: "₹2899",
+                text: "Classic wayfarer sunglasses with polarized lenses. Reduce glare and stay stylish.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg4.jpg",
+                imgAlt: "Sunglass 4",
+                title: "Sporty Wraparound Sunglasses",
+                price: "₹3499",
+                text: "Sporty wraparound sunglasses for an active lifestyle. Comfortable and trendy.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg5.jpg",
+                imgAlt: "Sunglass 5",
+                title: "Cat Eye Fashion Sunglasses",
+                price: "₹2999",
+                text: "Make a statement with these cat eye fashion sunglasses. Elegant and chic.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg6.jpg",
+                imgAlt: "Sunglass 6",
+                title: "Mirrored Lens Aviators",
+                price: "₹2699",
+                text: "Aviator sunglasses with mirrored lenses. Stand out with a touch of glam.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg7.jpg",
+                imgAlt: "Sunglass 7",
+                title: "Oversized Square Shades",
+                price: "₹3299",
+                text: "Square-shaped oversized sunglasses for a bold and fashionable look.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg8.jpg",
+                imgAlt: "Sunglass 8",
+                title: "Retro Clubmaster Sunglasses",
+                price: "₹2399",
+                text: "Retro clubmaster sunglasses with a modern twist. Timeless and trendy.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg9.jpg",
+                imgAlt: "Sunglass 9",
+                title: "Gradient Lens Butterfly Shades",
+                price: "₹2799",
+                text: "Butterfly-shaped sunglasses with gradient lenses. Elevate your style with these shades.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg10.jpg",
+                imgAlt: "Sunglass 10",
+                title: "Wooden Frame Polarized Sunglasses",
+                price: "₹3999",
+                text: "Polarized sunglasses with a unique touch - wooden frames for a natural look.",
+            },
+        ];
+
+        // Function to create dynamic cards
+        function createCards() {
+            const dynamicCards = document.getElementById("dynamicCards");
+
+            cardData.forEach((data) => {
+                const mainDiv = document.createElement("div");
+                mainDiv.className = "main";
+
+                const imgElement = document.createElement("img");
+                imgElement.src = data.imageSrc;
+                imgElement.alt = data.imgAlt;
+                imgElement.className = "img-e";
+
+                const contentDiv = document.createElement("div");
+                contentDiv.className = "contant";
+
+                const heading = document.createElement("h1");
+                heading.textContent = data.title;
+
+                const priceParagraph = document.createElement("p");
+                priceParagraph.classList.add("Price")
+                priceParagraph.textContent = data.price;
+
+                const textParagraph = document.createElement("p");
+                textParagraph.className = "txt";
+                textParagraph.textContent = data.text;
+
+                const buyButton = document.createElement("a");
+                buyButton.className = "btn-primary";
+                buyButton.href = "../login";  // You can set the actual link here
+                buyButton.textContent = "Buy";
+
+                const addlikeButton = document.createElement("a");
+                addlikeButton.className = "btn-primary";
+                addlikeButton.href = "../login";  // You can set the actual link here
+                addlikeButton.textContent = "Add Like";
+
+                contentDiv.appendChild(heading);
+                contentDiv.appendChild(priceParagraph);
+                contentDiv.appendChild(textParagraph);
+                contentDiv.appendChild(buyButton);
+                contentDiv.appendChild(addlikeButton);
+
+                // Add click event listener to Buy button
+                buyButton.addEventListener("click", (event) => {
+                    event.preventDefault();  // Prevent the default behavior of the anchor tag
+                    if (!isUserLoggedIn()) {
+                        const confirmation = confirm("You are not logged in. Do you want to go to the login page?");
+                        if (confirmation) {
+                            window.location.href = "../login";
+                        }
+                        // If the user clicks "Cancel", do nothing (stay on the current page)
+                    } else {
+                        // User is logged in, perform the default action
+                        window.location.href = buyButton.href;
+                    }
+                });
+
+                // Add click event listener to Add Like button
+                addlikeButton.addEventListener("click", (event) => {
+                    event.preventDefault();  // Prevent the default behavior of the anchor tag
+                    if (!isUserLoggedIn()) {
+                        const confirmation = confirm("You are not logged in. Do you want to go to the login page?");
+                        if (confirmation) {
+                            window.location.href = "../login";
+                        }
+                        // If the user clicks "Cancel", do nothing (stay on the current page)
+                    } else {
+                        // User is logged in, perform the default action
+                        window.location.href = addlikeButton.href;
+                    }
+                });
+
+                mainDiv.appendChild(imgElement);
+                mainDiv.appendChild(contentDiv);
+
+                dynamicCards.appendChild(mainDiv);
+            });
+        }
+
+        // Function to check if the user is logged in (replace with your actual authentication logic)
+        function isUserLoggedIn() {
+            // Replace this with your actual authentication logic (e.g., checking a session or token)
+            // For demonstration purposes, always return false (not logged in)
+            return false;
+        }
+
+        // Call the function to create the dynamic cards
+        createCards();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Card</title>
+    <link rel="stylesheet" href="../../../stylesheets/cart-data.css">
+</head>
+
+<body>
+    {{> nav}}
+          <div class="hero"><h1>  Watches </h1> </div>
+    <div id="dynamicCards" class="img"></div>
+
+    <script>
+        // Sample data
+       const cardData = [
+
+
+            {
+                category: "Belts",
+                imageSrc: "../../../images/cart-data/watches/w1.jpg",
+                imgAlt: "Balt 1",
+                title: "Stylish Leather Belt",
+                price: "₹1999",
+                text: "Elegant leather belt for both men and women. Perfect accessory for any occasion.",
+            },
+            {
+                category: "Belts",
+                imageSrc: "../../../images/cart-data/watches/w2.jpg",
+                imgAlt: "Balt 2",
+                title: "Classic Black Belt",
+                price: "₹1499",
+                text: "Timeless black belt that complements any outfit. Suitable for formal and casual wear.",
+            },
+            {
+                category: "Sunglasses",
+                imageSrc: "../../../images/cart-data/watches/w3.jpg",
+                imgAlt: "Sunglass 1",
+                title: "Aviator Sunglasses",
+                price: "₹2499",
+                text: "Iconic aviator sunglasses with UV protection. Stylish and functional for sunny days.",
+            },
+            {
+                category: "Sunglasses",
+                imageSrc: "../../../images/cart-data/watches/w4.jpg",
+                imgAlt: "Sunglass 2",
+                title: "Vintage Round Sunglasses",
+                price: "₹1999",
+                text: "Round sunglasses with a vintage touch. Trendy and perfect for a retro look.",
+            },
+            {
+                category: "Male Wallets",
+                imageSrc: "../../../images/cart-data/watches/w5.jpg",
+                imgAlt: "Wallet 1",
+                title: "Slim Leather Wallet",
+                price: "₹2999",
+                text: "Slim and stylish leather wallet with multiple card slots. Ideal for minimalist enthusiasts.",
+            },
+            {
+                category: "Male Wallets",
+                imageSrc: "../../../images/cart-data/watches/w6.jpg",
+                imgAlt: "Wallet 2",
+                title: "Bifold Wallet with Coin Pocket",
+                price: "₹3499",
+                text: "Classic bifold wallet with a coin pocket. Organize your essentials with ease.",
+            },
+            {
+                category: "Hand Watches",
+                imageSrc: "../../../images/cart-data/watches/w7.jpg",
+                imgAlt: "Watch 1",
+                title: "Sporty Chronograph Watch",
+                price: "₹4999",
+                text: "Sporty chronograph watch for men and women. Perfect for an active lifestyle.",
+            },
+            {
+                category: "Hand Watches",
+                imageSrc: "../../../images/cart-data/watches/w8.jpg",
+                imgAlt: "Watch 2",
+                title: "Elegant Rose Gold Watch",
+                price: "₹4499",
+                text: "Elegantly designed rose gold watch. A timeless accessory for any outfit.",
+            },
+            {
+                category: "Opticals",
+                imageSrc: "../../../images/cart-data/watches/w9.jpg",
+                imgAlt: "Optical 1",
+                title: "Rectangular Prescription Glasses",
+                price: "₹3699",
+                text: "Stylish rectangular prescription glasses for clear vision and a fashionable look.",
+            },
+            {
+                category: "Opticals",
+                imageSrc: "../../../images/cart-data/watches/w10.jpg",
+                imgAlt: "Optical 2",
+                title: "Fashionable Blue Light Blocking Glasses",
+                price: "₹2499",
+                text: "Protect your eyes from digital strain with these trendy blue light blocking glasses.",
+            },
+
+        ];
+
+
+
+
+        // Function to create dynamic cards
+        function createCards() {
+            const dynamicCards = document.getElementById("dynamicCards");
+
+            cardData.forEach((data) => {
+                const mainDiv = document.createElement("div");
+                mainDiv.className = "main";
+
+                const imgElement = document.createElement("img");
+                imgElement.src = data.imageSrc;
+                imgElement.alt = data.imgAlt;
+                imgElement.className = "img-e";
+
+                const contentDiv = document.createElement("div");
+                contentDiv.className = "contant";
+
+                const heading = document.createElement("h1");
+                heading.textContent = data.title;
+
+                const priceParagraph = document.createElement("p");
+                priceParagraph.classList.add("Price")
+                priceParagraph.textContent = data.price;
+
+                const textParagraph = document.createElement("p");
+                textParagraph.className = "txt";
+                textParagraph.textContent = data.text;
+
+                const buyButton = document.createElement("a");
+                buyButton.className = "btn-primary";
+                buyButton.href = "../login";  // You can set the actual link here
+                buyButton.textContent = "Buy";
+
+                const addlikeButton = document.createElement("a");
+                addlikeButton.className = "btn-primary";
+                addlikeButton.href = "../login";  // You can set the actual link here
+                addlikeButton.textContent = "Add Like";
+
+                contentDiv.appendChild(heading);
+                contentDiv.appendChild(priceParagraph);
+                contentDiv.appendChild(textParagraph);
+                contentDiv.appendChild(buyButton);
+                contentDiv.appendChild(addlikeButton);
+
+                // Add click event listener to Buy button
+                buyButton.addEventListener("click", (event) => {
+                    event.preventDefault();  // Prevent the default behavior of the anchor tag
+                    if (!isUserLoggedIn()) {
+                        const confirmation = confirm("You are not logged in. Do you want to go to the login page?");
+                        if (confirmation) {
+                            window.location.href = "../login";
+                        }
+                        // If the user clicks "Cancel", do nothing (stay on the current page)
+                    } else {
+                        // User is logged in, perform the default action
+                        window.location.href = buyButton.href;
+                    }
+                });
+
+                // Add click event listener to Add Like button
+                addlikeButton.addEventListener("click", (event) => {
+                    event.preventDefault();  // Prevent the default behavior of the anchor tag
+                    if (!isUserLoggedIn()) {
+                        const confirmation = confirm("You are not logged in. Do you want to go to the login page?");
+                        if (confirmation) {
+                            window.location.href = "../login";
+                        }
+                        // If the user clicks "Cancel", do nothing (stay on the current page)
+                    } else {
+                        // User is logged in, perform the default action
+                        window.location.href = addlikeButton.href;
+                    }
+                });
+
+                mainDiv.appendChild(imgElement);
+                mainDiv.appendChild(contentDiv);
+
+                dynamicCards.appendChild(mainDiv);
+            });
+        }
+
+        // Function to check if the user is logged in (replace with your actual authentication logic)
+        function isUserLoggedIn() {
+            // Replace this with your actual authentication logic (e.g., checking a session or token)
+            // For demonstration purposes, always return false (not logged in)
+            return false;
+        }
+
+        // Call the function to create the dynamic cards
+        createCards();
+    </script>
+</body>
+
+</html>

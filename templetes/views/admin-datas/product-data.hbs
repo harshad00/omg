@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../stylesheets/admin.css">
+    <style>
+        .box1 {
+            overflow-x: auto;
+            margin: 0px 5px;
+        }
+
+        .search-container {
+            margin-bottom: 10px;
+        }
+
+        .search-container input[type=text],
+        .search-container select,
+        .search-container button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>product data</h1>
+    </header>
+    <nav>
+        <a href="../admin">Home</a>
+        <a href="user-data">User Data</a>
+        <a href="product-data">Product Data</a>
+        <a href="addproduct">Add Product</a>
+        <a href="order-details">Order Details</a>
+         <a href="userRequert">Uer Question</a>
+    </nav>
+
+    <main>
+        <div id="page-data">
+            <h1>Product List</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search...">
+                <select id="filterBy">
+                    <option value="productname">Product Name</option>
+                    <option value="_id">Product ID</option>
+                </select>
+                <button onclick="performSearch()">Search</button>
+            </div>
+            <div class="box1">
+                <div class="main-product-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>No</th>
+                                <th>Product Name</th>
+                                <th>Product ID</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Stock Quantity</th>
+                                <th>Gender</th>
+                                <th>Images</th>
+                                <th>Availability</th>
+                                <th>Manufacturer</th>
+                                <th>Delete Data</th>
+                                <th>Update Data</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each product_data}}
+                            <tr>
+                                <td>{{@index}}</td>
+                                <td>{{this.productname}}</td>
+                                <td>{{this._id}}</td>
+                                <td>{{this.description}}</td>
+                                <td>{{this.category}}</td>
+                                <td>{{this.price}}</td>
+                                <td>{{this.stockQuantity}}</td>
+                                <td>{{this.gender}}</td>
+                                <td>
+                                    {{#each this.images}}
+                                    <img src="../../../images/uploads/{{this}}" alt="Product Image"
+                                        style="max-width: 50px; max-height: 50px; margin-right: 5px;">
+                                    {{/each}}
+                                </td>
+                                <td>{{this.availability}}</td>
+                                <td>{{this.manufacturer}}</td>
+                                <td>
+                                    <a href="/admin-datas/delete-product/{{this._id}}" class="delete-link"
+                                        onclick="return confirm('Are you sure you want to delete this product?');">
+                                        Delete
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="/admin-datas/edit-product/{{this._id}}">Update</a>
+
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+    // Function to filter table rows based on input values
+    function performSearch() {
+        var searchInput = document.getElementById("searchInput").value.toUpperCase();
+        var filterBy = document.getElementById("filterBy").value;
+        var rows = document.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+        for (var i = 0; i < rows.length; i++) {
+            var columnValue = rows[i].getElementsByTagName("td")[getIndexOfColumn(filterBy)].innerText.toUpperCase();
+
+            // Check if the column value matches the search input
+            if (columnValue.indexOf(searchInput) > -1) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+
+    // Function to get the index of the selected column
+    function getIndexOfColumn(columnName) {
+        switch (columnName) {
+            case 'productname':
+                return 1;
+            case '_id':
+                return 2;
+            default:
+                return 1; // Default to Product Name column
+        }
+    }
+</script>
+
+</body>
+
+</html>

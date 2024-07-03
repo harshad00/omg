@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Address Form</title>
+  <link rel="stylesheet" href="../../stylesheets/userAddress.css">
+  <style>
+    .addressdata {
+      font-family: Arial, sans-serif;
+      
+    }
+
+    .addressdata-h2 {
+      color: #333;
+    }
+
+    .main {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    input[type="radio"] {
+      margin-right: 5px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .delete-button {
+      height: 2rem;
+      display: inline-block;
+      background-color: #ff5555;
+      color: #fff;
+      padding: 5px 10px;
+      text-decoration: none;
+      border-radius: 3px;
+      cursor: pointer;
+      margin-left: 1rem;
+      margin-top: 5px;
+    }
+
+    .delete-button:hover {
+      background-color: #cc0000;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    #addressSelectionForm {
+      margin-top: 10px;
+    }
+
+    p::before {
+      content: '\00a0';
+    }
+  </style>
+</head>
+
+<div>
+  <div class="main">
+    <div class="addressdata">
+      <h2 class="addressdata-h2">Your Addresses</h2>
+      {{#if userAddress}}
+      <form id="addressSelectionForm">
+        <div class="addresses">
+          {{#each userAddress.userAddressId as |address|}}
+          <div class="main1">
+            <input type="radio" id="address_{{@index}}" name="selectedAddress" value="{{address._id}}">
+            {{!-- <p> {{address._id}} </p> --}}
+            <label for="address_{{@index}}">
+              <p>Address: {{address.address.street}}, {{address.address.city}}, {{address.address.state}}
+                {{address.address.zipCode}}</p>
+              {{#if address.address.NewMOB}}
+              <p>Mobile: {{address.address.NewMOB}}</p>
+              {{else}}
+              <p>Mobile: {{userAddress.mobile}}</p>
+              {{/if}}
+            </label>
+            <a href="/deleteAddress/{{address._id}}" class="delete-button">Delete</a>
+          </div>
+          {{/each}}
+        </div>
+        <button type="submit" class="payment-button">Go for Payment</button>
+      </form>
+      {{else}}
+      <p>No addresses found.</p>
+      {{/if}}
+    </div>
+ 
+  <div class="addresForm">
+    <div class="form-container">
+      <h2>Add Your Address</h2>
+      <div class="undurline"></div>
+      <form id="userAddress" action="/userAddress" method="post">
+        <label for="street">Street:</label>
+        <input type="text" id="street" name="street" required>
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required>
+        <label for="state">State:</label>
+        <input type="text" id="state" name="state" required>
+        <label for="zipCode">Zip Code:</label>
+        <input type="text" id="zipCode" name="zipCode" required>
+        <label for="new_mobNO">Add Another contact:<samp class="note"> *Optional</samp></label>
+        <input type="number" id="new_mobNO" name="new_mobNO">
+        <a href="address-storeosuccessfully"> <button class="btn"  type="submit">Submit</button></a>
+      </form>
+    </div>
+    </div>
+  </div>
+  
+  </body>
+
+  <script src="../../javascripts/userAddress.js "></script>
+  <script>
+    document.getElementById('addressSelectionForm').addEventListener('submit', function (event) {
+      event.preventDefault();
+      const selectedAddressId = document.querySelector('input[name="selectedAddress"]:checked').value;
+      console.log('Selected Address ID:', selectedAddressId);
+    });
+
+
+    document.getElementById("addressSelectionForm").addEventListener('submit', function (event) {
+      event.preventDefault();
+      const selectedAddressId = document.querySelector('input[name="selectedAddress"]:checked').value;
+      const paymentButton = document.querySelector('.payment-button');
+      paymentButton.href = "/payment/" + selectedAddressId;
+      window.location.href = paymentButton.href;
+    });
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../stylesheets/admin.css">
+    <style>
+         .search-container input[type=text],
+        .search-container select,
+        .search-container button {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>user data</h1>
+    </header>
+    <nav>
+        <a href="../admin">Home</a>
+        <a href="user-data">User Data</a>
+        <a href="product-data">Product Data</a>
+        <a href="addproduct">Add Product</a>
+        <a href="order-details">Order Details</a>
+ <a href="userRequert">Uer Question</a>
+    </nav>
+
+    <!-- Add the search bar HTML here -->
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search...">
+        <select id="filterBy">
+            <option value="username">User Name</option>
+            <option value="user_id">User ID</option>
+            <option value="mobile">Mobile Number</option>
+            {{!-- <option value="role">Role</option> --}}
+        </select>
+
+        <button onclick="performSearch()">Search</button>
+    </div>
+
+    <div id="page-data">
+        <h2>User Data Page</h2>
+        <table>
+            <thead>
+                <tr>
+
+                    <th>No</th>
+                    <th>User Name</th>
+                    <th>User ID</th>
+                    <th>Mobile Number</th>
+                    <th>Role</th>
+                    <th>Register Date</th>
+                    <th>UpDate Data </th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each user_data}}
+                <tr>
+                    <!-- <td>{{this.name}}</td> -->
+                    <td>{{@index}}</td>
+                    <td data-filter="username">{{username}}</td>
+                    <td data-filter="user_id">{{user_id}}</td>
+                    {{!-- <td data-filter="Id">{{Id}}</td> --}}
+                    <td data-filter="mobile">{{mobile}}</td>
+                    <td data-filter="role">{{role}}</td>
+                    <td data-filter="createdAt">{{createdAt}}</td>
+                    <td data-filter="updatedAt">{{updatedAt}}</td>
+                    <td>
+                        <a id="deleteLink_{{_id}}" href="/admin-datas/delete-userData/{{_id}}" class="delete-link"
+                            onclick="return confirmDelete('{{_id}}');">
+                            Delete
+                        </a>
+                    </td>
+
+
+
+                    {{/each}}
+                    <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+    </div>
+
+
+    </main>
+
+
+    <script>
+        // Function to perform debouncing
+        function debounce(func, delay) {
+            let timeout;
+            return function () {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => {
+                    func.apply(context, args);
+                }, delay);
+            };
+        }
+
+        // Function to handle the search
+        function performSearch() {
+            // Get the search input and selected filter values
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            console.log(searchInput);
+            const filterBy = document.getElementById('filterBy').value.toLowerCase();
+            console.log(filterBy);
+
+            // Filter the table rows based on the search input and selected filter
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                // Get the text content of the specified column for comparison
+                // Check if the search input is present in the column's text content
+                let cellData = row.querySelector(`[data-filter="${filterBy}"]`);
+                let rowData = cellData.textContent.toLowerCase(); // Assuming you want to use the text content for comparison
+
+                if (rowData.includes(searchInput)) {
+                    row.style.display = ''; // Display the row if it matches the search criteria
+                } else {
+                    row.style.display = 'none'; // Hide the row if it doesn't match the search criteria
+                }
+
+            });
+        }
+
+
+
+
+    </script>
+
+
+</body>
+
+</html>

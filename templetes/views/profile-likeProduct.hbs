@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Liked Products</title>
+    <!-- Include your CSS stylesheets or links here -->
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+            box-sizing: border-box;
+        }
+        h1{
+            text-align: center;
+            font-size: 2rem;
+        }
+
+        img,
+        picture {
+            max-width: 100%;
+            display: block;
+        }
+
+        .img {
+            max-width: 60rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+            gap: 0.4rem;
+            margin: 10px auto;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 1.1rem;
+        }
+
+        .Price {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .main {
+            box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+            border-radius: .3rem;
+        }
+
+        .img-e {
+            aspect-ratio: 1/1;
+            object-fit: fill;
+        }
+
+        /* Add these styles to your existing <style> tag in the head section */
+
+        .btn-primary {
+            text-decoration: none;
+            color: #fff;
+            background-color: dodgerblue;
+            padding: 0.5rem 1rem;
+            display: inline-block;
+            margin-top: 10px;
+            border-radius: 0.3rem;
+            transition: background-color 0.3s;
+            margin: 1rem;
+        }
+
+        .btn-primary:hover {
+            background-color: royalblue;
+        }
+
+        .home-text{
+            position: absolute;
+            top: 150px;
+        }
+        .pro-not{
+            width: 100%;
+            display: flex ;
+            justify-content: center;
+            align-items: center;
+
+        }
+        .pro-not p{
+            font-size: 2rem;
+        }
+    </style>
+</head>
+
+<body>
+    <h1> Liked Products</h1>
+    
+       
+    {{#if user}}   
+    {{!-- <div>{{user._id}} </div> --}}
+    {{!-- {{ console.log(user._id)}} --}}
+    {{#if user.like.length}}
+    <div class="img">
+        {{#each user.like}}
+        <div class="main">
+
+            {{#if this.images}}
+            <img src="../../images/uploads/{{this.images}}" alt="{{this.productName}}" class="img-e">
+            {{/if}}
+            {{#if this.productname}}
+            <strong>Product Name:</strong> {{this.productname}} <br>
+            {{/if}}
+            {{#if this.price}}
+            <strong class="Price">Price:</strong> {{this.price}} <br>
+            {{/if}}
+
+            <a href="/userAddress/{{_id}}" class="Button">Buy</a>
+         <a href="/profile-likeProduct/{{_id}}" class="btn-primary"> Delete From Like </a>
+
+            <!-- Include other product details as needed -->
+        </div>
+        {{/each}}
+    </div>
+    {{else}}
+    <div class="pro-not">
+    <p>No liked products found.</p>
+    </div>
+    {{/if}}
+    {{else}}
+    <p>User data not available.</p>
+    {{/if}}
+    
+    <!-- Include your additional HTML content or scripts here -->
+</body>
+
+</html>

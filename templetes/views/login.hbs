@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title> 
+    <link rel="stylesheet" href="../../stylesheets/register.css">
+</head>
+<body>
+    <div class="main vh">
+
+     <div class="back"> <a class="back-btn" href="/"> ⬅️ Back To Home </a> </div>
+    <div class="container">
+        <h1>Login</h1>
+       
+        {{#if  error.length}}
+          <p class="error">{{error}} </p>
+          {{else}}
+          {{/if}}
+    
+        <form action="/login" method="post">
+            <div class="form-control">
+                <input type="text" required placeholder="User Name" name="username">
+                {{!-- <label>username</label> --}}
+            </div>
+            <input type="hidden" name="role" value="user">
+            <div class="form-control">
+                <input type="password" required placeholder="Password" name="password">
+                {{!-- <label>Password</label> --}}
+            </div>
+           <input type="submit" class="btn" value="Login">
+            {{!-- <p class="text"> <a href="update">Forgot Password</a></p> --}}
+            <p class="text">Don't have an account? <a href="register">Register</a></p>
+        </form>
+    </div>
+    </div>
+</body>
+<script src="../../javascripts/register.js"></script>
+</html>

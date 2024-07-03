@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+    <link rel="stylesheet" href="../../stylesheets/product.css">
+    <link rel="stylesheet" href="../../stylesheets/admin.css">
+</head>
+
+<body>
+    <header>
+        <h1>Add Product</h1>
+    </header>
+    <nav>
+        <a href="../admin">Home</a>
+        <a href="user-data">User Data</a>
+        <a href="product-data">Product Data</a>
+        <a href="addproduct">Add Product</a>
+        <a href="order-details">Order Details</a>
+         <a href="userRequert">Uer Question</a>
+
+    </nav>
+    <main class="add-product-table">
+        <div id="page-data">
+             <div class="container">
+                <h2>Add Product</h2>
+                <form id="productForm" action="/admin-datas/addproduct" method="post" enctype="multipart/form-data" onsubmit="removeSpaces()">
+                    <label for="productName">Product Name:</label>
+                    <input type="text" id="productName" name="productname" required>
+
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" rows="4" required></textarea>
+                    <label>Category:</label>
+                    <div class="category-options">
+                        <input type="radio" id="optical" name="category" value="Optical" class="radio-btn" required>
+                        <label for="optical">Optical</label>
+
+                        <input type="radio" id="sunglasses" name="category" value="Sunglasses" class="radio-btn" required>
+                        <label for="sunglasses">Sunglasses</label>
+
+                        <input type="radio" id="watches" name="category" value="Watches" class="radio-btn" required>
+                        <label for="watches">Watches</label>
+
+                        <input type="radio" id="belts" name="category" value="Belt" class="radio-btn" required>
+                        <label for="belts">Belts</label>
+
+                        <input type="radio" id="wallets" name="category" value="Wallet" class="radio-btn" required>
+                        <label for="wallets">Wallets</label>
+                    </div>
+
+                    <div class="gender_dev">
+                    <label for="gender">Gender:</label>
+                        <input type="checkbox" name="gender" value="male"> Male
+                        <input type="checkbox" name="gender" value="female"> Female
+                        <input type="checkbox" name="gender" value="kids"> Kids
+                        <input type="checkbox" name="gender" value="all"> For All
+                    </div>
+                    <label for="price">Price:</label>
+                    <input type="number" id="price" name="price" step="0.01" required>
+
+                    <label for="stockQuantity">Stock Quantity:</label>
+                    <input type="number" id="stockQuantity" name="stockQuantity" required>
+
+                    <label for="images">Product Image:</label>
+                    <input type="file" id="images" name="images" accept="image/*"  required>
+
+                    <label for="availability">Availability:</label>
+                    <select id="availability" name="availability" required>
+                        <option value="true">Available</option>
+                        <option value="false">Not Available</option>
+                    </select>
+                    <label for="manufacturer">Manufacturer:</label>
+                   <input type="text" id="manufacturer" name="manufacturer" required>
+                    <button class="submit_btn" type="submit">Submit</button>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+<script>
+    function removeSpaces() {
+        var productName = document.getElementById('productName');
+        var description = document.getElementById('description');
+        var price = document.getElementById('price');
+        var stockQuantity = document.getElementById('stockQuantity');
+        var manufacturer = document.getElementById('manufacturer');
+
+        // Remove leading and trailing spaces
+        productName.value = productName.value.trim();
+        description.value = description.value.trim();
+        price.value = price.value.trim();
+        stockQuantity.value = stockQuantity.value.trim();
+        manufacturer.value = manufacturer.value.trim();
+    }
+</script>
+
+</html>
+

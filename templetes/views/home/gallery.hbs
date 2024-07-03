@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Card Pagination</title>
+    <link rel="stylesheet" href="../../../stylesheets/cart-data.css">
+    <style>
+        #paginationButtons {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        #paginationButtons button {
+            margin: 5px;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        #paginationButtons button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    {{> nav}}
+    <div class="hero">
+        <h1>Male Wallets</h1>
+    </div>
+    <div id="dynamicCards" class="img"></div>
+    <div id="paginationButtons">
+        <button id="prevButton">Previous</button>
+        <button id="nextButton">Next</button>
+    </div>
+    <div class="title" id="h1">
+    <h1>about us</h1>
+  </div>
+  <div class="about">
+    <div class="about-text">
+      <h2 class="about-tagline">"OMG Opticals and Gifts: Where Clarity Meets Creativity."</h2>
+      <p class="about-summary">Welcome to OMG Opticals and Gifts, your one-stop destination for
+        a diverse range of eyewear and stylish accessories. Explore our curated collection of
+        optical frames and sunglasses, each designed to enhance your vision with precision and flair.
+        Our fashion-forward goggles not only protect your eyes but also make a bold style statement.
+        For the discerning gentlemen, we offer a sophisticated range of purses and belts that blend
+        functionality with fashion, adding an extra touch of refinement to your ensemble. Elevate your
+        wristwear game with our stunning selection of watches for both men and women, embodying timeless
+        elegance and modern design. At OMG Opticals and Gifts, we strive to provide you with not just
+        products, but experiences that reflect your unique style and personality. Discover the perfect
+        blend of functionality and fashion as you indulge in the world of opticals, goggles, purses,
+        belts, and watches – all under one roof. Your journey to style and vision begins here.
+      </p>
+      <div class="about-contact">
+
+        <h4 class="con-number"> Phone No: +91 90994 08413</h4>
+
+        <h4 class="con-main"> Email: omgenterprise1810gmail.com</h4>
+
+        <h4 class="con-address"> Address: Shop No. 6, Shakti Shopping Center, Opposite Patel Cycle Store,
+          Near Bhamariya Nala, Mahesana-2</h4>
+      </div>
+    </div>
+    <div class="about-adress">
+      <div>
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d5671.522949338083!2d72.38430917304733!3d23.595864363492684!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x395c4361aca204b5%3A0x69292b0b8bc269dc!2sPARTH%20TRADING%20COMPANY!5e0!3m2!1sen!2sin!4v1707371351539!5m2!1sen!2sin"
+          class="add-map" style="border:0;" allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
+    </div>
+  </div>
+
+  {{> footer}}
+
+    <script>
+        const cardData = [
+            // optical data 
+             {
+                imageSrc: "../../../images/cart-data/opticals/optical1.jpg",
+                imgAlt: "Optical 1",
+                title: "Rectangular Prescription Glasses",
+                price: "₹3699",
+                text: "Stylish rectangular prescription glasses for clear vision and a fashionable look.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical2.jpg",
+                imgAlt: "Optical 2",
+                title: "Fashionable Blue Light Blocking Glasses",
+                price: "₹2499",
+                text: "Protect your eyes from digital strain with these trendy blue light blocking glasses.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical3.jpg",
+                imgAlt: "Optical 3",
+                title: "Retro Round Reading Glasses",
+                price: "₹1999",
+                text: "Classic round reading glasses with a retro vibe. Perfect for book lovers.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical4.jpg",
+                imgAlt: "Optical 4",
+                title: "Titanium Frame Eyeglasses",
+                price: "₹4499",
+                text: "Lightweight and durable titanium frame eyeglasses for a comfortable fit.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical5.jpg",
+                imgAlt: "Optical 5",
+                title: "Oversized Cat Eye Glasses",
+                price: "₹2999",
+                text: "Make a statement with these oversized cat eye glasses. Stylish and chic.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical6.jpg",
+                imgAlt: "Optical 6",
+                title: "Wireframe Aviator Glasses",
+                price: "₹3699",
+                text: "Aviator-style glasses with a modern twist. Wireframe design for a sleek look.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical7.jpg",
+                imgAlt: "Optical 7",
+                title: "Geometric Shape Spectacles",
+                price: "₹2899",
+                text: "Experiment with fashion with these geometric shape spectacles. Unique and trendy.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/opticals/optical8.jpg",
+                imgAlt: "Optical 8",
+                title: "Wooden Frame Glasses",
+                price: "₹3999",
+                text: "Environmentally friendly wooden frame glasses for a natural and stylish look.",
+            },
+          
+            // sunglassis data 
+              {
+                imageSrc: "../../../images/cart-data/sunglasses/sg1.jpg",
+                imgAlt: "Sunglass 1",
+                title: "Aviator Sunglasses",
+                price: "₹2499",
+                text: "Iconic aviator sunglasses with UV protection. Stylish and functional for sunny days.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg2.jpg",
+                imgAlt: "Sunglass 2",
+                title: "Vintage Round Sunglasses",
+                price: "₹1999",
+                text: "Round sunglasses with a vintage touch. Trendy and perfect for a retro look.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg3.jpg",
+                imgAlt: "Sunglass 3",
+                title: "Polarized Wayfarer Shades",
+                price: "₹2899",
+                text: "Classic wayfarer sunglasses with polarized lenses. Reduce glare and stay stylish.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg4.jpg",
+                imgAlt: "Sunglass 4",
+                title: "Sporty Wraparound Sunglasses",
+                price: "₹3499",
+                text: "Sporty wraparound sunglasses for an active lifestyle. Comfortable and trendy.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg5.jpg",
+                imgAlt: "Sunglass 5",
+                title: "Cat Eye Fashion Sunglasses",
+                price: "₹2999",
+                text: "Make a statement with these cat eye fashion sunglasses. Elegant and chic.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg6.jpg",
+                imgAlt: "Sunglass 6",
+                title: "Mirrored Lens Aviators",
+                price: "₹2699",
+                text: "Aviator sunglasses with mirrored lenses. Stand out with a touch of glam.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg7.jpg",
+                imgAlt: "Sunglass 7",
+                title: "Oversized Square Shades",
+                price: "₹3299",
+                text: "Square-shaped oversized sunglasses for a bold and fashionable look.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/sunglasses/sg8.jpg",
+                imgAlt: "Sunglass 8",
+                title: "Retro Clubmaster Sunglasses",
+                price: "₹2399",
+                text: "Retro clubmaster sunglasses with a modern twist. Timeless and trendy.",
+            },
+         
+            // walltes data 
+              {
+                imageSrc: "../../../images/cart-data/wallets/wl1.jpg",
+                imgAlt: "Wallet 1",
+                title: "Slim Leather Wallet",
+                price: "₹2999",
+                text: "Slim and stylish leather wallet with multiple card slots. Ideal for minimalist enthusiasts.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl2.jpg",
+                imgAlt: "Wallet 2",
+                title: "Bifold Wallet with Coin Pocket",
+                price: "₹3499",
+                text: "Classic bifold wallet with a coin pocket. Organize your essentials with ease.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl3.jpg",
+                imgAlt: "Wallet 3",
+                title: "Retro Leather Money Clip",
+                price: "₹2599",
+                text: "Retro-style money clip made of genuine leather. Keep your bills secure and stylish.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl4.jpg",
+                imgAlt: "Wallet 4",
+                title: "Trifold RFID Blocking Wallet",
+                price: "₹3899",
+                text: "Trifold wallet with RFID blocking technology. Protect your cards from unauthorized scanning.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl5.jpg",
+                imgAlt: "Wallet 5",
+                title: "Zip-Around Travel Wallet",
+                price: "₹4499",
+                text: "Spacious zip-around wallet for travelers. Securely store your cards, cash, and passport.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl6.jpg",
+                imgAlt: "Wallet 6",
+                title: "Modern Leather Card Holder",
+                price: "₹1999",
+                text: "Sleek leather card holder for those who prefer a minimalist approach. Carry your essential cards in style.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl7.jpg",
+                imgAlt: "Wallet 7",
+                title: "Canvas Bifold Wallet",
+                price: "₹1799",
+                text: "Casual canvas bifold wallet with ample card slots and a clear ID window. Perfect for everyday use.",
+            },
+            {
+                imageSrc: "../../../images/cart-data/wallets/wl8.jpg",
+                imgAlt: "Wallet 8",
+                title: "Slim Front Pocket Wallet",
+                price: "₹2199",
+                text: "Ultra-slim front pocket wallet for a discreet and comfortable carry. Fits seamlessly in your front pocket.",
+            },
+           
+            // watches
+             {
+                category: "Belts",
+                imageSrc: "../../../images/cart-data/watches/w1.jpg",
+                imgAlt: "Balt 1",
+                title: "Stylish Leather Belt",
+                price: "₹1999",
+                text: "Elegant leather belt for both men and women. Perfect accessory for any occasion.",
+            },
+            {
+                category: "Belts",
+                imageSrc: "../../../images/cart-data/watches/w2.jpg",
+                imgAlt: "Balt 2",
+                title: "Classic Black Belt",
+                price: "₹1499",
+                text: "Timeless black belt that complements any outfit. Suitable for formal and casual wear.",
+            },
+            {
+                category: "Sunglasses",
+                imageSrc: "../../../images/cart-data/watches/w3.jpg",
+                imgAlt: "Sunglass 1",
+                title: "Aviator Sunglasses",
+                price: "₹2499",
+                text: "Iconic aviator sunglasses with UV protection. Stylish and functional for sunny days.",
+            },
+            {
+                category: "Sunglasses",
+                imageSrc: "../../../images/cart-data/watches/w4.jpg",
+                imgAlt: "Sunglass 2",
+                title: "Vintage Round Sunglasses",
+                price: "₹1999",
+                text: "Round sunglasses with a vintage touch. Trendy and perfect for a retro look.",
+            },
+            {
+                category: "Male Wallets",
+                imageSrc: "../../../images/cart-data/watches/w5.jpg",
+                imgAlt: "Wallet 1",
+                title: "Slim Leather Wallet",
+                price: "₹2999",
+                text: "Slim and stylish leather wallet with multiple card slots. Ideal for minimalist enthusiasts.",
+            },
+            {
+                category: "Male Wallets",
+                imageSrc: "../../../images/cart-data/watches/w6.jpg",
+                imgAlt: "Wallet 2",
+                title: "Bifold Wallet with Coin Pocket",
+                price: "₹3499",
+                text: "Classic bifold wallet with a coin pocket. Organize your essentials with ease.",
+            },
+            {
+                category: "Hand Watches",
+                imageSrc: "../../../images/cart-data/watches/w7.jpg",
+                imgAlt: "Watch 1",
+                title: "Sporty Chronograph Watch",
+                price: "₹4999",
+                text: "Sporty chronograph watch for men and women. Perfect for an active lifestyle.",
+            },
+            {
+                category: "Hand Watches",
+                imageSrc: "../../../images/cart-data/watches/w8.jpg",
+                imgAlt: "Watch 2",
+                title: "Elegant Rose Gold Watch",
+                price: "₹4499",
+                text: "Elegantly designed rose gold watch. A timeless accessory for any outfit.",
+            },
+           // belt data 
+           {
+        imageSrc: "../../../images/cart-data/belts/balt1.jpg",
+        imgAlt: "Belt 1",
+        title: "Classic Leather Belt",
+        price: "₹1599",
+        text: "Timeless classic leather belt that complements any outfit. A must-have for every wardrobe.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt2.jpg",
+        imgAlt: "Belt 2",
+        title: "Canvas Web Belt",
+        price: "₹1299",
+        text: "Casual canvas web belt with a durable buckle. Perfect for a laid-back and comfortable style.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt3.jpg",
+        imgAlt: "Belt 3",
+        title: "Studded Leather Belt",
+        price: "₹1899",
+        text: "Edgy studded leather belt for a bold and fashionable look. Add a touch of personality to your attire.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt4.jpg",
+        imgAlt: "Belt 4",
+        title: "Slim Dress Belt",
+        price: "₹1799",
+        text: "Slim and sleek dress belt for a polished and refined appearance. Ideal for formal occasions.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt5.jpg",
+        imgAlt: "Belt 5",
+        title: "Braided Leather Belt",
+        price: "₹2199",
+        text: "Elegant braided leather belt that adds texture and style to your outfit. A versatile accessory for any occasion.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt6.jpg",
+        imgAlt: "Belt 6",
+        title: "Casual Elastic Belt",
+        price: "₹999",
+        text: "Comfortable and stretchable elastic belt for a relaxed and casual look. Perfect for everyday wear.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt7.jpg",
+        imgAlt: "Belt 7",
+        title: "Embossed Pattern Belt",
+        price: "₹1699",
+        text: "Chic embossed pattern belt that adds a touch of sophistication to your ensemble. Make a statement with your style.",
+    },
+    {
+        imageSrc: "../../../images/cart-data/belts/balt8.jpg",
+        imgAlt: "Belt 8",
+        title: "Double Ring Belt",
+        price: "₹1499",
+        text: "Trendy double ring belt with a unique buckle design. Elevate your fashion game with this stylish accessory.",
+    },
+        ];
+
+        const itemsPerPage = 8;
+        let currentPage = 1;
+
+        function createCards(startIndex, endIndex) {
+            const dynamicCards = document.getElementById("dynamicCards");
+            dynamicCards.innerHTML = ''; // Clear previous cards
+
+            for (let i = startIndex; i < endIndex; i++) {
+                if (cardData[i]) {
+                    const data = cardData[i];
+                    const mainDiv = document.createElement("div");
+                    mainDiv.className = "main";
+
+                    const imgElement = document.createElement("img");
+                    imgElement.src = data.imageSrc;
+                    imgElement.alt = data.imgAlt;
+                    imgElement.className = "img-e";
+
+                    const contentDiv = document.createElement("div");
+                    contentDiv.className = "contant";
+
+                    const heading = document.createElement("h1");
+                    heading.textContent = data.title;
+
+                    const priceParagraph = document.createElement("p");
+                    priceParagraph.classList.add("Price")
+                    priceParagraph.textContent = data.price;
+
+                    const textParagraph = document.createElement("p");
+                    textParagraph.className = "txt";
+                    textParagraph.textContent = data.text;
+
+                    const buyButton = document.createElement("a");
+                    buyButton.className = "btn-primary";
+                    buyButton.href = "../login"; // You can set the actual link here
+                    buyButton.textContent = "Buy";
+
+                    const addlikeButton = document.createElement("a");
+                    addlikeButton.className = "btn-primary";
+                    addlikeButton.href = "../login"; // You can set the actual link here
+                    addlikeButton.textContent = "Add Like";
+
+                    contentDiv.appendChild(heading);
+                    contentDiv.appendChild(priceParagraph);
+                    contentDiv.appendChild(textParagraph);
+                    contentDiv.appendChild(buyButton);
+                    contentDiv.appendChild(addlikeButton);
+
+                    mainDiv.appendChild(imgElement);
+                    mainDiv.appendChild(contentDiv);
+
+                    dynamicCards.appendChild(mainDiv);
+                }
+            }
+        }
+
+        function showPage(pageNumber) {
+            const startIndex = (pageNumber - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            createCards(startIndex, endIndex);
+            setPageName(pageNumber);
+        }
+
+        function setupPagination() {
+            const prevButton = document.getElementById("prevButton");
+            const nextButton = document.getElementById("nextButton");
+
+            prevButton.addEventListener("click", () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    showPage(currentPage);
+                }
+            });
+
+            nextButton.addEventListener("click", () => {
+                const totalPages = Math.ceil(cardData.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    showPage(currentPage);
+                }
+            });
+        }
+
+        const pageNames = ["Optical", "", "Page 3", "Page 4", " Page 5"]; // Add more page names as needed
+
+        function setPageName(pageNumber) {
+            const pageTitle = document.querySelector('.hero h1');
+            pageTitle.textContent = pageNames[pageNumber - 1];
+        }
+
+        // Initial setup
+        showPage(currentPage);
+        setupPagination();
+    </script>
+</body>
+
+</html>

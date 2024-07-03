@@ -1,0 +1,71 @@
+
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+img,
+picture {
+    max-width: 100%;
+    display: block;
+}
+.hero{
+    display: flex;
+    justify-content: center;
+    margin: 1rem 0px ;
+}
+
+.img {
+    max-width: 60rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 0.4rem;
+    margin: 10px auto;
+    text-align: center;
+    gap: 1rem;
+   
+}
+
+h1 {
+    font-size: 1.1rem;
+}
+
+.Price {
+    font-size: 1.3rem;
+    font-weight: 700;
+}
+
+.main {
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    border-radius: .3rem;
+    overflow: hidden;
+}
+
+.img-e {
+    aspect-ratio: 1/1;
+    object-fit: fill;
+}
+
+/* Add these styles to your existing <style> tag in the head section */
+
+.btn-primary {
+    text-decoration: none;
+    color: #fff;
+    background-color: dodgerblue;
+    padding: 0.5rem 1rem;
+    display: inline-block;
+    margin-top: 10px;
+    border-radius: 0.3rem;
+    transition: background-color 0.3s;
+    margin: 1rem;
+
+}
+
+.btn-primary:hover {
+    background-color: royalblue;
+}
+
+.cart-data {
+    height: 100vh;
+}

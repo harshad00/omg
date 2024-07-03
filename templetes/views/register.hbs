@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="../../stylesheets/register.css">
+    <style>
+        .home-text {
+            position: relative;
+            top: -20rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main">
+        <div class="back register-margin"> <a class="back-btn" href="/"> ⬅️ Back To Home </a> </div>
+        <div class="container">
+            <h1>Register</h1>
+
+            {{#if errorMessages}}
+            <div class="error-message">
+                {{#each errorMessages}}
+                <p class="error">{{this}}</p>
+                {{/each}}
+            </div>
+            {{/if}}
+
+            <form id="registrationForm" action="/register" method="post" onsubmit="removeSpaces()">
+                <div class="form-control">
+                    <input type="text" required placeholder="User Name" name="username" id="usernameInput">
+                    {{!-- <label>User Name</label> --}}
+                </div>
+
+                <div class="form-control">
+                    <input type="text" id="numberInput" placeholder="Phone Number" required name="mobile">
+                    {{!-- <label>Phone No</label> --}}
+                </div>
+
+                <div class="form-control">
+                    <input type="password" id="passwordInput" placeholder="Password" required name="password">
+                    {{!-- <label>Password</label> --}}
+                    <span id="passwordError" class="error"></span>
+                </div>
+
+                <input type="submit" class="btn" value="Submit">
+                <p class="text"> You have an account go <a href="/login"> Login</a></p>
+            </form>
+
+        </div>
+    </div>
+
+    <script src="../../javascripts/register.js"></script>
+    <script>
+        function removeSpaces() {
+            var usernameInput = document.getElementById('usernameInput');
+            var numberInput = document.getElementById('numberInput');
+            var passwordInput = document.getElementById('passwordInput');
+            
+            // Remove leading and trailing spaces
+            usernameInput.value = usernameInput.value.trim();
+            numberInput.value = numberInput.value.trim();
+            passwordInput.value = passwordInput.value.trim();
+        }
+    </script>
+
+</body>
+
+</html>
