@@ -5,7 +5,9 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon src/app.js -e js,hbs",
-    "build": "npm run lint && npm run test"
+    "build": "npm run lint && npm run test",
+      "lint": "eslint .",
+    "test": "mocha"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
