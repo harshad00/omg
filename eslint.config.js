@@ -1,27 +1,35 @@
-module.exports = {
-    env: {
-      browser: true,
-      es2021: true,
+// eslint.config.js
+import { createConfig } from 'eslint/lib/shared/config/flat.js';
+import reactPlugin from 'eslint-plugin-react';
+import typescriptPlugin from '@typescript-eslint/eslint-plugin';
+
+export default createConfig([
+  {
+    files: ["*.js", "*.jsx", "*.ts", "*.tsx"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      parser: typescriptPlugin.parser,
+      globals: {
+        // Define your global variables here
+        // For example:
+        React: "readonly"
+      }
     },
-    extends: [
-      'eslint:recommended',
-      'plugin:react/recommended',
-      'plugin:@typescript-eslint/recommended',
-    ],
-    parser: '@typescript-eslint/parser',
-    parserOptions: {
-      ecmaFeatures: {
-        jsx: true,
-      },
-      ecmaVersion: 'latest',
-      sourceType: 'module',
+    plugins: {
+      react: reactPlugin,
+      "@typescript-eslint": typescriptPlugin
     },
-    plugins: [
-      'react',
-      '@typescript-eslint',
-    ],
     rules: {
-      // your custom rules
-    },
-  };
-  
+      // Your custom rules here
+    }
+  },
+  {
+    files: ["*.jsx"],
+    languageOptions: {
+      ecmaFeatures: {
+        jsx: true
+      }
+    }
+  }
+]);
