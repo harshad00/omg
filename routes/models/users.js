@@ -3,7 +3,8 @@ const plm = require("passport-local-mongoose");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 
-mongoose.connect("mongodb://0.0.0.0:27017/mogDB");
+// mongoose.connect("mongodb://0.0.0.0:27017/mogDB");
+mongoose.connect(`${process.env.MONGODB_URL}/mogDB`);
 
 const userSchema = mongoose.Schema(
   {

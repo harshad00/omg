@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 
 
-mongoose.connect("mongodb://0.0.0.0:27017/mogDB");
+// mongoose.connect("mongodb://0.0.0.0:27017/mogDB");
+mongoose.connect(`${process.env.MONGODB_URL}/mogDB`);
+
 
 const productSchema = mongoose.Schema({ 
   
