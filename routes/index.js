@@ -650,7 +650,7 @@ router.post(
     if (req.isAuthenticated() && req.user.role === "admin") {
       res.render("admin");
     } else if (req.isAuthenticated()) {
-      res.render("profile");
+      res.render("/profile");
     } else {
       // Handle other cases or redirect as needed
       res.redirect("/login");

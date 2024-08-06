@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const plm = require("passport-local-mongoose");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
+const dotenv = require("dotenv");
 
 // mongoose.connect("mongodb://0.0.0.0:27017/mogDB");
 mongoose.connect(`${process.env.MONGODB_URL}/mogDB`);
