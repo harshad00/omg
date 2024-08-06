@@ -113,6 +113,9 @@ router.get("/likeProduct/:id", isLoggedIn, async function (req, res) {
 router.get("/delete-like-list", async (req, res) => {
   res.render("delete-like-list");
 });
+router.get("/profile", async (req, res) => {
+  res.render("profile");
+});
 
 // Handle deleting a liked product
 router.get(
